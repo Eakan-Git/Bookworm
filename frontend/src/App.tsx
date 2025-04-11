@@ -1,14 +1,18 @@
 import './App.css'
-import { useTranslation } from 'react-i18next';
+import { Routes, Route } from 'react-router-dom';
+import Home from '@pages/Home';
+import Shop from '@pages/Shop';
+import About from '@pages/About';
+import Cart from '@pages/Cart';
 
 function App() {
-  const { t } = useTranslation();
-
   return (
-    <>
-      <h1>{t('greeting', { defaultValue: 'Hello, World!' })}</h1>
-      <p>{t('description', { defaultValue: 'This is a sample application.' })}</p>
-    </>
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/shop" element={<Shop />} />
+      <Route path="/about" element={<About />} />
+      <Route path="/cart" element={<Cart />} />
+    </Routes>
   )
 }
 
