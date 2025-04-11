@@ -12,6 +12,7 @@ build/
 .cache/
 coverage/
 *.sqlite3
+docs/
 
 # OS-specific
 Thumbs.db
