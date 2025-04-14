@@ -10,9 +10,9 @@ export default function CollectionContainer({
     children
 }: CollectionContainerProps) {
     return (
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col">
             <div>{header && header}</div>
-            <div className="px-4 py-8 border border-base-300">
+            <div className="py-8 border border-base-300">
                 {children}
             </div>
         </div>
