@@ -2,6 +2,13 @@ from fastapi import FastAPI
 from fastapi.logger import logger
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
+import os
+from dotenv import load_dotenv
+from pathlib import Path
+
+# Load environment variables
+dotenv_path = Path(__file__).resolve().parent.parent.parent / '.env'
+load_dotenv(dotenv_path=dotenv_path)
 
 # API routers
 from api.v1.endpoints import default as default_endpoint
@@ -9,6 +16,7 @@ from api.v1.endpoints import user as user_endpoint
 
 # Database configuration
 from database.postgres import PostgresDatabase
+from database.seed import seed_data
 from sqlalchemy.orm import Session
 
 # Initialize database instance
@@ -33,7 +41,19 @@ app.add_middleware(
 @app.on_event("startup")
 def on_startup():
     try:
+        if os.getenv("OVERWRITE_DB", "false").lower() == "true":
+            db_instance.drop_db()
         db_instance.create_db_and_tables()
+        if os.getenv("SEED_ON_STARTUP", "false").lower() == "true":
+            seed_data(
+                num_users=100,
+                num_authors=50, 
+                num_categories=30, 
+                num_books=2000,
+                num_orders=3300, 
+                num_reviews=2000, 
+                num_discounts=500
+            )
     except Exception as e:
         logger.error(f"Error creating database tables: {e}")
 

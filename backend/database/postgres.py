@@ -1,16 +1,10 @@
 import os
-from pathlib import Path
 from sqlmodel import SQLModel, create_engine, Session
-from dotenv import load_dotenv
 from typing import Generator
 
 
 class PostgresDatabase:
     def __init__(self):
-        # Load environment variables from .env file in the root directory
-        dotenv_path = Path(__file__).resolve().parent.parent.parent / '.env'
-        load_dotenv(dotenv_path=dotenv_path)
-
         # Get database credentials from environment variables
         self.POSTGRES_USER = os.getenv("POSTGRES_USER")
         if self.POSTGRES_USER is None:
@@ -50,3 +44,6 @@ class PostgresDatabase:
         # Function to get a database session
         with Session(self.engine) as session:
             yield session
+            
+    def drop_db(self):
+        SQLModel.metadata.drop_all(self.engine)
