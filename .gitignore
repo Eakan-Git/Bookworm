@@ -1,6 +1,7 @@
 # Global
 node_modules/
 .env
+!.env.example
 .env.*
 .DS_Store
 *.log
