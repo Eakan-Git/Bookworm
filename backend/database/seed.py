@@ -1,4 +1,6 @@
 import random
+from datetime import timedelta, date
+from decimal import Decimal
 from faker import Faker
 
 from models.user import User
