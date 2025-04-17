@@ -5,15 +5,15 @@ from api.v1.schemas.query import BookFilter
 from models.book import Book
 from models.discount import Discount
 from api.v1.services.discount import get_current_discount_for_book
-from api.v1.services.author import get_author_by_id
-from api.v1.services.category import get_category_by_id
+from api.v1.services.author import AuthorService
+from api.v1.services.category import CategoryService
 from datetime import date
 from sqlalchemy.orm import joinedload
 from sqlalchemy import desc
 
 
 class BookService:
-    @staticmethod
+    @staticmethod   
     def get_books(db: Session, filter_params: BookFilter) -> Tuple[List[BookRead], int]:
         pass
 
@@ -23,8 +23,8 @@ class BookService:
         if not book:
             return None
         discount = get_current_discount_for_book(book_id, db)
-        author = get_author_by_id(book.author_id, db)
-        category = get_category_by_id(book.category_id, db)
+        author = AuthorService.get_author_by_id(book.author_id, db)
+        category = CategoryService.get_category_by_id(book.category_id, db)
 
         book_dict = {**book.__dict__}
         book_dict["discount"] = discount
@@ -48,8 +48,8 @@ class BookService:
 
         result = []
         for book in books:
-            author = get_author_by_id(book.author_id, db)
-            category = get_category_by_id(book.category_id, db)
+            author = AuthorService.get_author_by_id(book.author_id, db)
+            category = CategoryService.get_category_by_id(book.category_id, db)
 
             book_dict = book.__dict__.copy()
             book_dict["discount"] = book.discounts[0]

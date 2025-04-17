@@ -5,6 +5,7 @@ from api.v1.schemas.common import PaginatedResponse, PaginationMeta
 from api.v1.schemas.book import BookRead
 from api.v1.schemas.query import BookFilter
 from api.v1.services.book import BookService
+from api.v1.services.author import AuthorService
 
 
 class BookController:
@@ -30,13 +31,11 @@ class BookController:
     @staticmethod
     def get_book_by_id(book_id: int, db: Session) -> BookRead:
         book = BookService.get_book_by_id(book_id, db)
-
         if not book:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail=f"Book not found with id {book_id}"
             )
-
         return book
 
     @staticmethod
