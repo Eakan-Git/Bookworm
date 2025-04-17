@@ -1,10 +1,10 @@
 from sqlalchemy.orm import Session
 from fastapi import HTTPException, status
-
+from typing import List
 from api.v1.schemas.common import PaginatedResponse, PaginationMeta
 from api.v1.schemas.book import BookRead
 from api.v1.schemas.query import BookFilter
-from api.v1.services.book import get_books, get_book_by_id
+from api.v1.services.book import get_books, get_book_by_id, get_on_sale_books
 
 
 class BookController:
@@ -38,3 +38,7 @@ class BookController:
             )
 
         return book
+
+    @staticmethod
+    def get_on_sale_books(db: Session) -> List[BookRead]:
+        return get_on_sale_books(db)

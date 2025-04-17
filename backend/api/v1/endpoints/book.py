@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, status, HTTPException
 from sqlalchemy.orm import Session
+from typing import List
 
 from api.v1.schemas.common import PaginatedResponse
 from api.v1.schemas.book import BookRead
@@ -8,6 +9,15 @@ from api.v1.controllers.book import BookController
 from api.v1.dependencies.dependencies import get_db_session
 
 router = APIRouter(prefix="/books")
+
+
+@router.get("/on-sale",
+            response_model=List[BookRead],
+            status_code=status.HTTP_200_OK,
+            summary="Get list of books on sale",
+            description="Retrieve books with biggest discounts.")
+def get_on_sale_books(db: Session = Depends(get_db_session)):
+    return BookController.get_on_sale_books(db)
 
 
 @router.get("/{book_id}",
