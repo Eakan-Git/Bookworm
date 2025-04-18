@@ -1,8 +1,10 @@
 import CollectionContainer from "@/components/CollectionContainer";
-import { books } from "@/data/books";
+// import { books } from "@/data/books";
 import { ChevronRight } from "lucide-react";
 import BooksCarousel from "@/components/BooksCarousel/BooksCarousel";
 import { useNavigate } from 'react-router-dom';
+import { bookService } from "@/api/bookService";
+import { useQuery } from '@tanstack/react-query'
 
 export default function Home() {
     const navigate = useNavigate();
@@ -17,6 +19,10 @@ export default function Home() {
             </button>
         </div>
     );
+    const { data: books } = useQuery({
+        queryKey: ['books'],
+        queryFn: () => bookService.getOnSale(),
+    });
     return (
         <div className="w-11/12 mx-auto pb-4">
             <CollectionContainer
@@ -27,7 +33,7 @@ export default function Home() {
                         <BookCard key={book.id} book={book} />
                     ))}
                 </div> */}
-                <BooksCarousel books={books} />
+                <BooksCarousel books={books?.data || []} />
             </CollectionContainer>
         </div>
     );
