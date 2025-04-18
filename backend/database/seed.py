@@ -1,4 +1,6 @@
 import random
+from datetime import timedelta, date
+from decimal import Decimal
 from faker import Faker
 
 from models.user import User
@@ -92,18 +94,122 @@ def seed_data(num_users=10, num_authors=5, num_categories=3, num_books=20,
         db.commit()
         
         print(f"Creating {num_discounts} discounts...")
-        discount_books = random.sample(books, min(num_discounts, len(books)))
-        
         today = date.today()
-        discounts = [
-            Discount(
+        
+        # Create a dictionary to track books that already have discounts
+        # and their discount periods
+        book_discount_periods = {}
+        
+        # Create discounts ensuring no overlapping periods for the same book
+        discounts = []
+        
+        # Select books that will have multiple discounts (about 30% of books)
+        num_books_with_multiple = min(len(books) // 3, num_discounts // 2)
+        books_for_multiple_discounts = random.sample(books, num_books_with_multiple)
+        
+        print(f"Selected {len(books_for_multiple_discounts)} books to have multiple discount periods")
+        
+        # First, create one discount for each selected book (guaranteed multiple discounts)
+        for book in books_for_multiple_discounts:
+            # Create first discount period (past discount)
+            past_start = today - timedelta(days=random.randint(60, 90))
+            past_end = today - timedelta(days=random.randint(10, 30))
+            
+            past_discount = Discount(
                 book_id=book.id,
-                discount_start_date=today - timedelta(days=random.randint(0, 30)),
-                discount_end_date=today + timedelta(days=random.randint(1, 90)),
-                discount_price=Decimal(str(round(float(book.book_price) * random.uniform(0.5, 0.9), 2)))
+                discount_start_date=past_start,
+                discount_end_date=past_end,
+                discount_price=Decimal(str(round(float(book.book_price) * random.uniform(0.6, 0.8), 2)))
             )
-            for book in discount_books
-        ]
+            discounts.append(past_discount)
+            
+            # Track this period
+            if book.id not in book_discount_periods:
+                book_discount_periods[book.id] = []
+            book_discount_periods[book.id].append((past_start, past_end))
+            
+            # Create second discount period (future discount)
+            future_start = today + timedelta(days=random.randint(10, 30))
+            future_end = today + timedelta(days=random.randint(60, 90))
+            
+            future_discount = Discount(
+                book_id=book.id,
+                discount_start_date=future_start,
+                discount_end_date=future_end,
+                discount_price=Decimal(str(round(float(book.book_price) * random.uniform(0.5, 0.7), 2)))
+            )
+            discounts.append(future_discount)
+            
+            # Track this period
+            book_discount_periods[book.id].append((future_start, future_end))
+        
+        # Calculate how many more discounts we need
+        remaining_discounts = num_discounts - (len(books_for_multiple_discounts) * 2)
+        
+        # Now create random discounts for the remaining count
+        discount_count = len(discounts)
+        max_attempts = remaining_discounts * 3  # Allow multiple attempts to find non-overlapping periods
+        attempts = 0
+        
+        while discount_count < num_discounts and attempts < max_attempts:
+            # Select a random book
+            book = random.choice(books)
+            
+            # Generate random dates - some current, some past, some future
+            date_type = random.choice(['current', 'past', 'future'])
+            
+            if date_type == 'current':
+                # Current discount
+                start_date = today - timedelta(days=random.randint(1, 10))
+                end_date = today + timedelta(days=random.randint(1, 30))
+            elif date_type == 'past':
+                # Past discount (expired)
+                start_date = today - timedelta(days=random.randint(60, 90))
+                end_date = today - timedelta(days=random.randint(5, 30))
+            else:
+                # Future discount (not yet active)
+                start_date = today + timedelta(days=random.randint(5, 30))
+                end_date = today + timedelta(days=random.randint(40, 90))
+            
+            # Skip if end_date is before start_date
+            if end_date <= start_date:
+                attempts += 1
+                continue
+                
+            # Check if this book already has discounts
+            if book.id in book_discount_periods:
+                # Check for overlap with existing periods
+                overlap = False
+                for existing_start, existing_end in book_discount_periods[book.id]:
+                    if start_date <= existing_end and end_date >= existing_start:
+                        overlap = True
+                        break
+                        
+                if overlap:
+                    attempts += 1
+                    continue
+            else:
+                # First discount for this book
+                book_discount_periods[book.id] = []
+            
+            # No overlap, create the discount
+            discount_price = Decimal(str(round(float(book.book_price) * random.uniform(0.5, 0.9), 2)))
+            
+            discount = Discount(
+                book_id=book.id,
+                discount_start_date=start_date,
+                discount_end_date=end_date,
+                discount_price=discount_price
+            )
+            
+            # Add to our tracking dictionary
+            book_discount_periods[book.id].append((start_date, end_date))
+            
+            # Add to our list of discounts
+            discounts.append(discount)
+            discount_count += 1
+        
+        print(f"Successfully created {len(discounts)} non-overlapping discounts")
         db.add_all(discounts)
         db.commit()
         
