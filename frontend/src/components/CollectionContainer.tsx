@@ -10,10 +10,12 @@ export default function CollectionContainer({
     children
 }: CollectionContainerProps) {
     return (
-        <div className="flex flex-col">
-            <div>{header && header}</div>
-            <div className="py-8 border border-base-300">
-                {children}
+        <div className="w-11/12 mx-auto my-4">
+            <div className="flex flex-col">
+                <div>{header && header}</div>
+                <div className="py-8 border border-base-300">
+                    {children}
+                </div>
             </div>
         </div>
     );
