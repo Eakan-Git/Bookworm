@@ -11,8 +11,14 @@ export default function BookCard({ book }: { book: Book }) {
         >
             <figure className="w-full h-72 overflow-hidden">
                 <img
-                    src={book.book_cover_photo}
+                    src={book.book_cover_photo || "/images/book.png"}
                     alt={book.book_title}
+                    loading="lazy"
+                    onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.onerror = null;
+                        target.src = "/images/book.png";
+                    }}
                     className="w-full h-full object-cover"
                 />
             </figure>
@@ -23,18 +29,18 @@ export default function BookCard({ book }: { book: Book }) {
                         {book.book_title}
                     </h2>
                     <h3 className="text-sm text-base line-clamp-2 h-12">
-                        {book.author_name}
+                        {book.author.author_name}
                     </h3>
                 </div>
 
                 <div className="bg-base-200 px-4 py-3 h-14 flex items-center gap-2">
-                    {book.discount_price && (
+                    {book.discount.discount_price && (
                         <span className="line-through text-sm">
                             {book.book_price}
                         </span>
                     )}
                     <span className="text-lg font-semibold">
-                        {book.discount_price || book.book_price}
+                        {book.discount.discount_price || book.book_price}
                     </span>
                 </div>
             </div>

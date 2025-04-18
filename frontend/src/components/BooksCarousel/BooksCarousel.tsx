@@ -5,11 +5,7 @@ import 'swiper/css/navigation';
 import BookCard from '@components/BookCard';
 import { Book } from '@/types/book';
 
-type Props = {
-  books: Book[];
-};
-
-export default function BooksCarousel({ books }: Props) {
+export default function BooksCarousel({ books }: { books: Book[] }) {
   return (
     <div className="w-11/12 mx-auto">
       <div className="flex items-center gap-2 sm:gap-4 md:gap-6 lg:gap-8">

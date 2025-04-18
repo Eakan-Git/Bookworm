@@ -1,9 +1,12 @@
+import { Category } from "@/types/category";
+import { Author } from "@/types/author";
+import { Discount } from "@/types/discount";
 export interface Book {
     id: number;
-    category_name: string;
-    author_name: string;
+    category: Category;
+    author: Author;
     book_title: string;
     book_price: number;
-    discount_price?: number;
+    discount: Discount;
     book_cover_photo: string;
 }
