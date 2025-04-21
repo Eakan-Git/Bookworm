@@ -7,8 +7,8 @@ import { useCartStore } from "@/stores/cartStore";
 const NavbarContent = () => {
     const location = useLocation();
     const currentPath = location.pathname;
-    const { getItemsQuantity } = useCartStore();
-    const itemsQuantity = getItemsQuantity();
+    const { getItemQuantity } = useCartStore();
+    const itemQuantity = getItemQuantity();
     return (
         <>
             {menuItems.map((item) => (
@@ -16,9 +16,9 @@ const NavbarContent = () => {
                     <Link to={item.path || "#"} className="flex items-center space-x-2">
                         <span>
                             {item.label}
-                            {item.trailing && itemsQuantity > 0 && (
+                            {item.id === "cart" && (
                                 <span className="ml-1">
-                                    {`(${itemsQuantity})`}
+                                    {`(${itemQuantity})`}
                                 </span>
                             )}
                         </span>
