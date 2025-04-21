@@ -10,6 +10,7 @@ interface CartStore {
     decreaseQuantity: (bookId: number) => void;
     getBookQuantity: (bookId: number) => number;
     getCartTotals: () => number;
+    getItemsQuantity: () => number;
 }
 
 export const useCartStore = create<CartStore>()(
@@ -79,6 +80,9 @@ export const useCartStore = create<CartStore>()(
             getBookQuantity: (bookId) => {
                 const item = get().cart.find((item) => item.id === bookId);
                 return item ? item.quantity : 0;
+            },
+            getItemsQuantity: () => {
+                return get().cart.reduce((total, item) => total + item.quantity, 0);
             },
         }),
         { name: "cart-store" }
