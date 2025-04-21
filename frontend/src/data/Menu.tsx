@@ -19,12 +19,12 @@ export const menuItems: MenuItem[] = [
         label: "Shop",
         icon: <ShoppingBag className="h-5 w-5" />,
         path: "/shop",
-        // trailing: "(1)",
     },
     {
         id: "cart",
         label: "Cart",
         icon: <ShoppingCart className="h-5 w-5" />,
         path: "/cart",
+        trailing: "(0)",
     },
 ];
