@@ -81,7 +81,7 @@ def seed_data(num_users=10, num_authors=5, num_categories=3, num_books=20,
         print(f"Creating {num_books} books...")
         books = [
             Book(
-                book_title=fake.sentence(nb_words=4)[:-1],
+                book_title=fake.sentence(nb_words=10)[:-1],
                 book_summary=fake.paragraph(),
                 book_price=Decimal(str(round(random.uniform(9.99, 49.99), 2))),
                 book_cover_photo=f"cover_{i+1}.jpg",
@@ -277,7 +277,7 @@ def seed_data(num_users=10, num_authors=5, num_categories=3, num_books=20,
                 review_title=fake.sentence(nb_words=5)[:-1],
                 review_details=fake.paragraph(),
                 review_date=fake.date_time_between(start_date="-1y", end_date="now"),
-                rating_star=round(random.uniform(1, 5), 1)
+                rating_star=random.randint(1, 5)
             )
             db.add(review)
         
