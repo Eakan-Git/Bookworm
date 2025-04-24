@@ -5,7 +5,7 @@ import PriceDisplay from '@/components/PriceDisplay/PriceDisplay';
 export default function BookCard({ book }: { book: Book }) {
     return (
         <Link to={`/books/${book.id}`} target='_blank'>
-            <div className="card bg-base-100 w-full max-w-64 h-120 shadow-sm rounded-sm hover:shadow-lg hover:cursor-pointer transition-shadow duration-300 flex flex-col">
+            <div className="card bg-base-100 w-64 h-120 shadow-sm rounded-sm hover:shadow-lg hover:cursor-pointer transition-shadow duration-300 flex flex-col">
                 <figure className="w-full h-72 overflow-hidden">
                     <img
                         src={book.book_cover_photo || "/images/book.png"}
@@ -22,10 +22,10 @@ export default function BookCard({ book }: { book: Book }) {
 
                 <div className="flex-1 flex flex-col justify-between">
                     <div className="card-body p-4 pt-3 pb-2">
-                        <h2 className="card-title text-base font-semibold leading-snug line-clamp-2 h-12">
+                        <h2 className="card-title text-base font-semibold leading-snug line-clamp-2 h-12 overflow-hidden">
                             {book.book_title}
                         </h2>
-                        <h3 className="text-sm text-base line-clamp-2 h-12">
+                        <h3 className="text-sm text-gray-600 line-clamp-1 overflow-hidden">
                             {book.author.author_name}
                         </h3>
                     </div>
