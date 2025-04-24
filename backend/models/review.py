@@ -13,7 +13,7 @@ class Review(SQLModel, table=True):
     review_title: str = Field(max_length=120)
     review_details: Optional[str] = Field(default=None)
     review_date: datetime = Field(default_factory=datetime.utcnow)
-    rating_star: Optional[float] = Field(default=None, ge=0.0, le=5.0)
+    rating_star: Optional[int] = Field(default=None, ge=0, le=5)
 
     # Relationships
     book: Optional["Book"] = Relationship(back_populates="reviews")
