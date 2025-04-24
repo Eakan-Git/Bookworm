@@ -1,5 +1,6 @@
 from sqlalchemy.orm import Session
 from typing import Tuple, List, Optional
+
 from api.v1.schemas.book import BookRead
 from api.v1.schemas.query import BookFilter
 from models.book import Book
@@ -9,11 +10,11 @@ from api.v1.services.author import AuthorService
 from api.v1.services.category import CategoryService
 from datetime import date
 from sqlalchemy.orm import joinedload
-from sqlalchemy import desc
+from sqlalchemy import desc, or_
 
 
 class BookService:
-    @staticmethod   
+    @staticmethod
     def get_books(db: Session, filter_params: BookFilter) -> Tuple[List[BookRead], int]:
         pass
 
@@ -40,7 +41,12 @@ class BookService:
             db.query(Book)
             .join(Discount, Book.id == Discount.book_id)
             .options(joinedload(Book.discounts))
-            .filter(Discount.discount_end_date > today)
+            .filter(
+                or_(
+                    Discount.discount_end_date == None,
+                    Discount.discount_end_date > today,
+                )
+            )
             .order_by(desc(Book.book_price - Discount.discount_price))
             .limit(10)
             .all()
