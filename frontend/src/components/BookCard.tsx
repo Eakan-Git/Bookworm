@@ -1,5 +1,6 @@
 import { Book } from '@/types/book';
 import { Link } from 'react-router-dom';
+import PriceDisplay from '@/components/PriceDisplay/PriceDisplay';
 
 export default function BookCard({ book }: { book: Book }) {
     return (
@@ -32,11 +33,11 @@ export default function BookCard({ book }: { book: Book }) {
                     <div className="bg-base-200 px-4 py-3 h-14 flex items-center gap-2">
                         {book.discount.discount_price && (
                             <span className="line-through text-sm">
-                                {book.book_price}
+                                <PriceDisplay price={book.book_price} />
                             </span>
                         )}
                         <span className="text-lg font-semibold">
-                            {book.discount.discount_price || book.book_price}
+                            <PriceDisplay price={book.discount.discount_price || book.book_price} />
                         </span>
                     </div>
                 </div>

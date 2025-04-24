@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Menu } from "lucide-react";
-import { menuItems } from "@/data/Menu";
+import { menuItems } from "@/layouts/Navbar/Menu";
 import { useLocation } from 'react-router-dom';
 import { useCartStore } from "@/stores/cartStore";
 

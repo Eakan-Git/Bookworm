@@ -1,6 +1,6 @@
 import React from 'react';
-import Navbar from '@/components/navigators/Navbar';
-import Footer from '@/components/Footer';
+import Navbar from '@/layouts/Navbar/Navbar';
+import Footer from '@/layouts/Footer';
 export default function MainLayout({ children }: { children: React.ReactNode }) {
     return (
         <main className="min-h-[100dvh] w-full">
