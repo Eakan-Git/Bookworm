@@ -13,7 +13,7 @@ export default function CollectionContainer({
         <div className="w-11/12 mx-auto my-4">
             <div className="flex flex-col">
                 <div>{header && header}</div>
-                <div className="py-8 border border-base-300">
+                <div className="py-8 border border-base-content/20">
                     {children}
                 </div>
             </div>
