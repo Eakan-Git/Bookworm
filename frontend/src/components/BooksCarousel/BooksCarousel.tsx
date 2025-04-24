@@ -26,7 +26,7 @@ export default function BooksCarousel({ books }: { books: Book[] }) {
           spaceBetween={16}
           slidesPerView={1}
           breakpoints={{
-            320: { slidesPerView: 2 },
+            320: { slidesPerView: 1 },
             640: { slidesPerView: 3 },
             1024: { slidesPerView: 4 },
           }}
