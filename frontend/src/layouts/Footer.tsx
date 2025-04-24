@@ -1,3 +1,6 @@
+
+import CurrencySelector from "@/components/CurrencySelector/CurrencySelector";
+
 export default function Footer() {
     return (
         <footer className="footer sm:footer-horizontal bg-base-300 items-center p-4">
@@ -11,6 +14,7 @@ export default function Footer() {
                     <span>Phone</span>
                 </div>
             </div>
+            <CurrencySelector />
         </footer>
     );
 }

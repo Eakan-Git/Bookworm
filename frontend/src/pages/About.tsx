@@ -1,10 +1,10 @@
-import PageTitle from "@/components/PageTitle";
+import PageLayout from "@/layouts/PageLayout";
 
 export default function About() {
     return (
-        <div className="w-11/12 mx-auto pb-4">
-            <PageTitle title="About Us" />
+        <PageLayout pageTitle="About Us">
             <div className="flex flex-col items-center md:w-8/12 mx-auto text-lg">
+
                 <h2 className="text-3xl font-bold my-4 pb-4 text-center">Welcome to Bookworm</h2>
                 <p className="py-4">
                     "Bookworm is an independent New York bookstore and language school with locations
@@ -42,6 +42,6 @@ export default function About() {
                     </div>
                 </div>
             </div>
-        </div>
+        </PageLayout>
     );
 }

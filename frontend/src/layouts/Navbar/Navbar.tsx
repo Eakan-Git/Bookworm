@@ -1,17 +1,27 @@
 import { Link } from 'react-router-dom';
 import { Menu } from "lucide-react";
-import { menuItems } from "@/data/Menu";
+import { menuItems } from "@/layouts/Navbar/Menu";
 import { useLocation } from 'react-router-dom';
+import { useCartStore } from "@/stores/cartStore";
 
 const NavbarContent = () => {
     const location = useLocation();
     const currentPath = location.pathname;
+    const { getItemQuantity } = useCartStore();
+    const itemQuantity = getItemQuantity();
     return (
         <>
             {menuItems.map((item) => (
                 <li key={item.id} className={currentPath === item.path ? 'link' : ''}>
                     <Link to={item.path || "#"} className="flex items-center space-x-2">
-                        <span>{item.label} {item.trailing}</span>
+                        <span>
+                            {item.label}
+                            {item.id === "cart" && (
+                                <span className="ml-1">
+                                    {`(${itemQuantity})`}
+                                </span>
+                            )}
+                        </span>
                     </Link>
                 </li>
             ))}
@@ -50,7 +60,7 @@ export default function Navbar({ children }: { children: React.ReactNode }) {
             <div className="drawer-content flex flex-col">
                 {/* Navbar */}
                 <div className="navbar bg-base-300 w-full">
-                    
+
                     <div className="mx-2 flex-1 px-2">
                         <div className="flex items-center space-x-2">
                             <img src="/images/logo.png" alt="Logo" className="h-8 w-8" />
