@@ -5,7 +5,7 @@ from api.v1.schemas.book import BookRead, BookReadSimple
 from api.v1.schemas.query import BookFilter
 from models.book import Book
 from models.discount import Discount
-from api.v1.services.discount import get_current_discount_for_book
+from api.v1.services.discount import DiscountService
 from api.v1.services.author import AuthorService
 from api.v1.services.category import CategoryService
 from api.v1.services.review import ReviewService
@@ -24,7 +24,7 @@ class BookService:
         book = db.query(Book).filter(Book.id == book_id).first()
         if not book:
             return None
-        discount = get_current_discount_for_book(book_id, db)
+        discount = DiscountService.get_current_discount_for_book(book_id, db)
         author = AuthorService.get_author_by_id(book.author_id, db)
         category = CategoryService.get_category_by_id(book.category_id, db)
         average_rating = ReviewService.get_average_rating_for_book(book_id, db)
