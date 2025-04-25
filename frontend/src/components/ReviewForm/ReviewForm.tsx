@@ -17,15 +17,15 @@ export default function ReviewForm() {
                     <label className="label text-sm text-base-content font-bold">Select a rating star</label>
                     <select defaultValue={1} className="select w-full">
                         <option value={1}>1 Star</option>
-                        <option value={2}>2 Star</option>
-                        <option value={3}>3 Star</option>
-                        <option value={4}>4 Star</option>
-                        <option value={5}>5 Star</option>
+                        <option value={2}>2 Stars</option>
+                        <option value={3}>3 Stars</option>
+                        <option value={4}>4 Stars</option>
+                        <option value={5}>5 Stars</option>
                     </select>
                 </div>
             </div>
             <div className="flex border-t border-base-content/20 p-4 justify-center">
-                <button className="btn text-bold text-lg rounded-sm">Submit Review</button>
+                <button className="btn btn-primary text-bold text-lg rounded-sm">Submit Review</button>
             </div>
         </div>
     );
