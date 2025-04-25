@@ -5,6 +5,7 @@ from api.v1.endpoints import author as author_endpoint
 from api.v1.endpoints import category as category_endpoint
 from api.v1.endpoints import book as book_endpoint
 from api.v1.endpoints import user as user_endpoint
+from api.v1.endpoints import review as review_endpoint
 from api.v1.endpoints import default as default_endpoint
 from fastapi import FastAPI
 from fastapi.logger import logger
@@ -69,6 +70,7 @@ app.include_router(user_endpoint.router, prefix="/api/v1", tags=["User"])
 app.include_router(book_endpoint.router, prefix="/api/v1", tags=["Books v1"])
 app.include_router(category_endpoint.router, prefix="/api/v1", tags=["Categories v1"])
 app.include_router(author_endpoint.router, prefix="/api/v1", tags=["Authors v1"])
+app.include_router(review_endpoint.router, prefix="/api/v1", tags=["Reviews v1"])
 
 # Add dependency for database session
 
