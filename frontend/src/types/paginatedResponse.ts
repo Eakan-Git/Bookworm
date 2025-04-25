@@ -1,7 +1,7 @@
 interface PaginationMeta {
     total: number;
     page: number;
-    size: number;
+    total_pages: number;
 }
 
 export interface PaginatedResponse<T> {
