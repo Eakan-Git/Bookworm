@@ -58,7 +58,7 @@ export default function AddToCart({ book, onAddToCart }: { book: Book, onAddToCa
                         <button className="btn rounded-none" onClick={() => handleQuantityChange(quantity + 1)}><Plus /></button>
                     </div>
                     <div className="w-full">
-                        <button className="btn btn-primary w-full mt-4 rounded-sm" onClick={handleAddToCart}>Add to Cart</button>
+                        <button className="btn btn-accent w-full mt-4" onClick={handleAddToCart}>Add to Cart</button>
                     </div>
                 </div>
             </div>
