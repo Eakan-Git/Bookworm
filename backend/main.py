@@ -14,14 +14,11 @@ import uvicorn
 import os
 from dotenv import load_dotenv
 from pathlib import Path
+from typing import Generator
 
 # Load environment variables
 dotenv_path = Path(__file__).resolve().parent.parent.parent / '.env'
 load_dotenv(dotenv_path=dotenv_path)
-
-# API routers
-
-# Database configuration
 
 # Initialize database instance
 db_instance = PostgresDatabase()
@@ -42,8 +39,6 @@ app.add_middleware(
 )
 
 # Create database tables on startup
-
-
 @app.on_event("startup")
 def on_startup():
     try:
@@ -72,10 +67,7 @@ app.include_router(category_endpoint.router, prefix="/api/v1", tags=["Categories
 app.include_router(author_endpoint.router, prefix="/api/v1", tags=["Authors v1"])
 app.include_router(review_endpoint.router, prefix="/api/v1", tags=["Reviews v1"])
 
-# Add dependency for database session
-
-
-def get_db() -> Session:
+def get_db() -> Generator[Session, None, None]:
     with db_instance.get_session() as db:
         yield db
 
