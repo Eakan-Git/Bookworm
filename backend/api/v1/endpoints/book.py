@@ -3,8 +3,9 @@ from sqlalchemy.orm import Session
 from typing import List
 
 from api.v1.schemas.common import PaginatedResponse
-from api.v1.schemas.book import BookRead
-from api.v1.schemas.query import BookFilter
+from api.v1.schemas.review import ReviewRead
+from api.v1.schemas.book import BookRead, BookReadSimple
+from api.v1.schemas.query import BookFilter, ReviewFilter
 from api.v1.controllers.book import BookController
 from api.v1.dependencies.dependencies import get_db_session
 
@@ -12,7 +13,7 @@ router = APIRouter(prefix="/books")
 
 
 @router.get("/on-sale",
-            response_model=List[BookRead],
+            response_model=List[BookReadSimple],
             status_code=status.HTTP_200_OK,
             summary="Get list of books on sale",
             description="Retrieve books with biggest discounts.")
@@ -67,3 +68,20 @@ def list_books(
     )
     # Use the controller to handle business logic
     # return BookController.get_books_paginated(filter_params, db)
+
+
+@router.get("/{book_id}/reviews",
+            response_model=PaginatedResponse[ReviewRead],
+            status_code=status.HTTP_200_OK,
+            summary="Get list of reviews for a book",
+            description="Retrieve reviews for a specific book.")
+def get_reviews_for_book(
+    book_id: int,
+    filter_params: ReviewFilter = Depends(),
+    db: Session = Depends(get_db_session)
+):
+    """Get a filtered and paginated list of reviews for a specific book.
+
+    This endpoint returns reviews for a specific book, with filtering and sorting options.
+    """
+    return BookController.get_reviews_by_book_id(book_id, filter_params, db)

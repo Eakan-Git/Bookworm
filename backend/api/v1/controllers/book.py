@@ -3,9 +3,9 @@ from fastapi import HTTPException, status
 from typing import List
 from api.v1.schemas.common import PaginatedResponse, PaginationMeta
 from api.v1.schemas.book import BookRead
-from api.v1.schemas.query import BookFilter
+from api.v1.schemas.query import BookFilter, ReviewFilter
+from api.v1.schemas.review import ReviewRead
 from api.v1.services.book import BookService
-from api.v1.services.author import AuthorService
 
 
 class BookController:
@@ -41,3 +41,11 @@ class BookController:
     @staticmethod
     def get_on_sale_books(db: Session) -> List[BookRead]:
         return BookService.get_on_sale_books(db)
+
+    @staticmethod
+    def get_popular_books(db: Session) -> List[BookRead]:
+        pass
+
+    @staticmethod
+    def get_reviews_by_book_id(book_id: int, filter_params: ReviewFilter, db: Session) -> PaginatedResponse[ReviewRead]:
+        pass
