@@ -113,7 +113,8 @@ def seed_data(num_users=10, num_authors=5, num_categories=3, num_books=20,
         for book in books_for_multiple_discounts:
             # Create first discount period (past discount)
             past_start = today - timedelta(days=random.randint(60, 90))
-            past_end = today - timedelta(days=random.randint(10, 30))
+            # 40% chance the past discount has no end date (lasts forever)
+            past_end = None if random.random() < 0.4 else today - timedelta(days=random.randint(10, 30))
 
             past_discount = Discount(
                 book_id=book.id,
@@ -130,7 +131,8 @@ def seed_data(num_users=10, num_authors=5, num_categories=3, num_books=20,
 
             # Create second discount period (future discount)
             future_start = today + timedelta(days=random.randint(10, 30))
-            future_end = today + timedelta(days=random.randint(60, 90))
+            # 30% chance the future discount has no end date (lasts forever)
+            future_end = None if random.random() < 0.3 else today + timedelta(days=random.randint(60, 90))
 
             future_discount = Discount(
                 book_id=book.id,
@@ -195,10 +197,12 @@ def seed_data(num_users=10, num_authors=5, num_categories=3, num_books=20,
             # No overlap, create the discount
             discount_price = Decimal(str(round(float(book.book_price) * random.uniform(0.5, 0.9), 2)))
 
+            # 30% chance the random discount has no end date (lasts forever)
+            end_date_nullable = None if random.random() < 0.3 else end_date
             discount = Discount(
                 book_id=book.id,
                 discount_start_date=start_date,
-                discount_end_date=end_date,
+                discount_end_date=end_date_nullable,
                 discount_price=discount_price
             )
 
