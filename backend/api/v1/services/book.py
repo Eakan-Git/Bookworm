@@ -1,13 +1,14 @@
 from sqlalchemy.orm import Session
 from typing import Tuple, List, Optional
 
-from api.v1.schemas.book import BookRead
+from api.v1.schemas.book import BookRead, BookReadSimple
 from api.v1.schemas.query import BookFilter
 from models.book import Book
 from models.discount import Discount
 from api.v1.services.discount import get_current_discount_for_book
 from api.v1.services.author import AuthorService
 from api.v1.services.category import CategoryService
+from api.v1.services.review import ReviewService
 from datetime import date
 from sqlalchemy.orm import joinedload
 from sqlalchemy import desc, or_
@@ -26,15 +27,16 @@ class BookService:
         discount = get_current_discount_for_book(book_id, db)
         author = AuthorService.get_author_by_id(book.author_id, db)
         category = CategoryService.get_category_by_id(book.category_id, db)
-
+        average_rating = ReviewService.get_average_rating_for_book(book_id, db)
         book_dict = {**book.__dict__}
         book_dict["discount"] = discount
         book_dict["author"] = author
         book_dict["category"] = category
+        book_dict["rating"] = average_rating
         return BookRead.model_validate(book_dict)
 
     @staticmethod
-    def get_on_sale_books(db: Session) -> List[BookRead]:
+    def get_on_sale_books(db: Session) -> List[BookReadSimple]:
         today = date.today()
 
         books = (
@@ -55,12 +57,10 @@ class BookService:
         result = []
         for book in books:
             author = AuthorService.get_author_by_id(book.author_id, db)
-            category = CategoryService.get_category_by_id(book.category_id, db)
 
             book_dict = book.__dict__.copy()
             book_dict["discount"] = book.discounts[0]
             book_dict["author"] = author
-            book_dict["category"] = category
             result.append(BookRead.model_validate(book_dict))
 
         return result
