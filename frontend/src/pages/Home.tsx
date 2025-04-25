@@ -13,7 +13,7 @@ export default function Home() {
         <div className="flex items-center justify-between my-4">
             <h1 className="text-3xl font-bold">On Sale</h1>
             <button className="btn btn-info text-info-content rounded-sm" onClick={() => {
-                navigate('/books/on-sale');
+                navigate('/shop');
             }}>
                 View All
                 <ChevronRight className="ml-2" />
