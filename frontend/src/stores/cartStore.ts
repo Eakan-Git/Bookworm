@@ -20,10 +20,10 @@ export const useCartStore = create<CartStore>()(
             getCartTotals: () => {
                 return get().cart.reduce((total, item) => {
                     const price =
-                        item.discount &&
-                        typeof item.discount.discount_price === "number" &&
-                        item.discount.discount_price > 0
-                            ? item.discount.discount_price
+                        item.discount?.discount_price &&
+                        typeof item.discount?.discount_price === "number" &&
+                        item.discount?.discount_price > 0
+                            ? item.discount?.discount_price
                             : item.book_price;
                     return total + price * item.quantity;
                 }, 0);
