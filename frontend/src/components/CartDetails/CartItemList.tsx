@@ -1,8 +1,17 @@
 import { useCartStore } from "@/stores/cartStore";
 import CartItemComponent from "@/components/CartDetails/CartItem";
+import { useCallback } from "react";
 
-export default function CartItemList() {
-    const { cart } = useCartStore();
+export default function CartItemListComponent() {
+    const { cart, increaseQuantity, decreaseQuantity } = useCartStore();
+
+    const handleIncreaseQuantity = useCallback((id: number) => {
+        increaseQuantity(id);
+    }, [increaseQuantity]);
+
+    const handleDecreaseQuantity = useCallback((id: number) => {
+        decreaseQuantity(id);
+    }, [decreaseQuantity]);
 
     return (
         <div className="flex flex-col border border-base-content/20 rounded-sm">
@@ -22,7 +31,12 @@ export default function CartItemList() {
             </div>
 
             {cart.map((item) => (
-                <CartItemComponent key={item.id} item={item} />
+                <CartItemComponent
+                    key={item.id}
+                    item={item}
+                    onIncreaseQuantity={handleIncreaseQuantity}
+                    onDecreaseQuantity={handleDecreaseQuantity}
+                />
             ))}
         </div>
     );

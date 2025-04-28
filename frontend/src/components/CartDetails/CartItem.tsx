@@ -1,11 +1,15 @@
 import type { CartItem } from "@/types/cartItem";
 import PriceDisplay from "@/components/PriceDisplay/PriceDisplay";
 import { Minus, Plus } from "lucide-react";
-import { useCartStore } from "@/stores/cartStore";
+import { memo } from "react";
 
-export default function CartItemComponent({ item }: { item: CartItem }) {
-    const { increaseQuantity, decreaseQuantity } = useCartStore();
+interface CartItemProps {
+    item: CartItem;
+    onIncreaseQuantity: (id: number) => void;
+    onDecreaseQuantity: (id: number) => void;
+}
 
+function CartItemComponent({ item, onIncreaseQuantity, onDecreaseQuantity }: CartItemProps) {
     const unitPrice = item.discount?.discount_price || item.book_price;
     const totalPrice = unitPrice * item.quantity;
 
@@ -47,11 +51,11 @@ export default function CartItemComponent({ item }: { item: CartItem }) {
             <div className="flex justify-between items-center mb-3">
                 <span className="text-sm font-medium">Quantity:</span>
                 <div className="flex">
-                    <button className="btn btn-sm rounded-none" onClick={() => { decreaseQuantity(item.id) }}><Minus size={16} /></button>
+                    <button className="btn btn-sm rounded-none" onClick={() => onDecreaseQuantity(item.id)}><Minus size={16} /></button>
                     <div className="flex items-center justify-center bg-base-200 px-4">
                         <span className="label text-base-content">{item.quantity}</span>
                     </div>
-                    <button className="btn btn-sm rounded-none" onClick={() => { increaseQuantity(item.id) }}><Plus size={16} /></button>
+                    <button className="btn btn-sm rounded-none" onClick={() => onIncreaseQuantity(item.id)}><Plus size={16} /></button>
                 </div>
             </div>
 
@@ -94,11 +98,11 @@ export default function CartItemComponent({ item }: { item: CartItem }) {
                     )}
                 </div>
                 <div className="w-32 flex">
-                    <button className="btn rounded-none" onClick={() => { decreaseQuantity(item.id) }}><Minus /></button>
+                    <button className="btn rounded-none" onClick={() => onDecreaseQuantity(item.id)}><Minus /></button>
                     <div className="w-full flex items-center justify-center bg-base-200">
                         <span className="label text-base-content p-2">{item.quantity}</span>
                     </div>
-                    <button className="btn rounded-none" onClick={() => { increaseQuantity(item.id) }}><Plus /></button>
+                    <button className="btn rounded-none" onClick={() => onIncreaseQuantity(item.id)}><Plus /></button>
                 </div>
                 <div className="w-24 text-center">
                     <PriceDisplay price={totalPrice} />
@@ -114,3 +118,5 @@ export default function CartItemComponent({ item }: { item: CartItem }) {
         </>
     );
 }
+
+export default memo(CartItemComponent);
