@@ -46,11 +46,11 @@ export default function Home() {
                 tabs={[
                     {
                         name: "Recommended",
-                        content: <BookCardGrid books={popularBooks?.data || []} />
+                        content: <BookCardGrid books={popularBooks?.data || []} className="md:w-10/12" />
                     },
                     {
                         name: "Popular",
-                        content: <BookCardGrid books={[...(onSaleBooks?.data || [])].reverse()} />
+                        content: <BookCardGrid books={[...(onSaleBooks?.data || [])].reverse()} className="md:w-10/12" />
                     }
                 ]}
             />

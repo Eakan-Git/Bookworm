@@ -67,7 +67,7 @@ export default function Pagination({ data, onChange }: { data: PaginationData, o
                 onClick={() => data.current_page > 1 && onChange(data.current_page - 1)}
                 disabled={data.current_page === 1}
             >
-                «
+                Previous
             </button>
 
             {/* Page numbers */}
@@ -93,7 +93,7 @@ export default function Pagination({ data, onChange }: { data: PaginationData, o
                 onClick={() => data.current_page < data.total_pages && onChange(data.current_page + 1)}
                 disabled={data.current_page === data.total_pages}
             >
-                »
+                Next
             </button>
         </div>
     );
