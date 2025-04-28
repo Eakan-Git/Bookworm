@@ -12,7 +12,7 @@ export default function Home() {
     const onSaleHeaderContent = (
         <div className="flex items-center justify-between my-4">
             <h1 className="text-3xl font-bold">On Sale</h1>
-            <button className="btn btn-info text-info-content rounded-sm" onClick={() => {
+            <button className="btn btn-accent text-info-content rounded-sm" onClick={() => {
                 navigate('/shop');
             }}>
                 View All
