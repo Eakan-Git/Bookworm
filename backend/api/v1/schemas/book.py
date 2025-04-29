@@ -48,6 +48,12 @@ class BookReadSimple(BookBase):
         orm_mode = True
         from_attributes = True
 
+class BookReadSimpleWithReviewCount(BookReadSimple):
+    review_count: int
+    rating: Optional[AverageRating] = None
+
+class BookReadSimpleWithRating(BookReadSimple):
+    rating: Optional[AverageRating] = None
 
 class BookUpdate(BookBase):
     """Schema for updating a book"""
