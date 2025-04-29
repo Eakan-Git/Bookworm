@@ -1,8 +1,8 @@
 from sqlalchemy.orm import Session, joinedload
 from typing import List, Optional
 
-from api.v1.schemas.book import BookRead, BookReadSimple, BookReadSimpleWithReviewCount
-from api.v1.schemas.query import BookFilter, ReviewFilter, ReviewSortField, SortDirection
+from api.v1.schemas.book import BookRead, BookReadSimple, BookReadSimpleWithReviewCount, BookReadSimpleWithRating
+from api.v1.schemas.query import BookFilter, ReviewFilter, ReviewSortField, SortDirection, BookSortField
 from api.v1.schemas.common import PaginatedResponse, PaginationMeta
 from api.v1.schemas.review import ReviewRead
 from models.book import Book
@@ -13,29 +13,176 @@ from api.v1.services.author import AuthorService
 from api.v1.services.category import CategoryService
 from api.v1.services.review import ReviewService
 from datetime import date
-from sqlalchemy.orm import joinedload
 from sqlalchemy import desc, or_, func, case
 
 
 class BookService:
     @staticmethod
-    def get_books(db: Session, filter_params: BookFilter) -> PaginatedResponse[BookReadSimple]:
-        pass
+    def get_books(db: Session, filter_params: BookFilter) -> PaginatedResponse[BookReadSimpleWithRating]:
+        """
+        Get paginated books with filtering and sorting options
+
+        Args:
+            db: Database session
+            filter_params: Filter and pagination parameters
+
+        Returns:
+            PaginatedResponse containing list of books and pagination metadata
+        """
+        today = date.today()
+
+        valid_discounts = (
+            db.query(
+                Discount.book_id,
+                func.min(Discount.discount_price).label("discount_price")
+            )
+            .filter(
+                or_(
+                    Discount.discount_end_date == None,
+                    Discount.discount_end_date > today
+                )
+            )
+            .group_by(Discount.book_id)
+            .subquery()
+        )
+
+        # Calculate discount amount and final price for sorting
+        discount_amount = case(
+            (valid_discounts.c.discount_price.is_(None), 0),
+            else_=Book.book_price - valid_discounts.c.discount_price
+        ).label("discount_amount")
+
+        final_price = case(
+            (valid_discounts.c.discount_price.is_(None), Book.book_price),
+            else_=valid_discounts.c.discount_price
+        ).label("final_price")
+
+        # Create a subquery to get average rating for each book
+        avg_ratings = (
+            db.query(
+                Review.book_id,
+                func.round(func.avg(Review.rating_star), 2).label("avg_rating"),
+                func.count(Review.id).label("review_count")
+            )
+            .group_by(Review.book_id)
+            .subquery()
+        )
+
+        query = (
+            db.query(
+                Book,
+                discount_amount,
+                final_price,
+                func.coalesce(avg_ratings.c.review_count, 0).label("review_count"),
+                func.coalesce(avg_ratings.c.avg_rating, 0).label("avg_rating")
+            )
+            .outerjoin(valid_discounts, Book.id == valid_discounts.c.book_id)
+            .outerjoin(avg_ratings, Book.id == avg_ratings.c.book_id)
+            .options(joinedload(Book.discounts))
+            .group_by(Book.id, valid_discounts.c.discount_price, avg_ratings.c.review_count, avg_ratings.c.avg_rating)
+        )
+
+        if filter_params.category_id is not None:
+            query = query.filter(Book.category_id == filter_params.category_id)
+
+        if filter_params.author_id is not None:
+            query = query.filter(Book.author_id == filter_params.author_id)
+
+        if filter_params.rating_star is not None:
+            query = query.filter(avg_ratings.c.avg_rating >= filter_params.rating_star)
+
+        if filter_params.sort_by == BookSortField.ON_SALE:
+            # Default: Sort by discount amount (desc) and then by final price (asc)
+            if filter_params.sort_direction == SortDirection.DESC:
+                query = query.order_by(desc(discount_amount), final_price)
+            else:
+                query = query.order_by(discount_amount, final_price)
+
+        elif filter_params.sort_by == BookSortField.POPULARITY:
+            if filter_params.sort_direction == SortDirection.DESC:
+                query = query.order_by(desc("review_count"))
+            else:
+                query = query.order_by("review_count")
+
+        elif filter_params.sort_by == BookSortField.PRICE:
+            if filter_params.sort_direction == SortDirection.DESC:
+                query = query.order_by(desc(final_price))
+            else:
+                query = query.order_by(final_price)
+
+        total_count = query.count()
+
+        offset = (filter_params.page - 1) * filter_params.size
+        query = query.offset(offset).limit(filter_params.size)
+
+        query_result = query.all()
+
+        result = []
+        for row in query_result:
+            book = row.Book
+
+            author = AuthorService.get_author_by_id(book.author_id, db)
+            category = CategoryService.get_category_by_id(book.category_id, db)
+
+            # Get valid discounts for this book
+            valid_book_discounts = [
+                d for d in book.discounts
+                if d.discount_end_date is None or d.discount_end_date > today
+            ]
+
+            # Sort discounts by discount amount (biggest discount first)
+            if valid_book_discounts:
+                valid_book_discounts.sort(key=lambda d: book.book_price - d.discount_price, reverse=True)
+
+            book_dict = book.__dict__.copy()
+            avg_rating = round(float(row.avg_rating), 2) if row.avg_rating is not None else 0.0
+            rating_dict = {"review_count": row.review_count, "average_rating": avg_rating}
+            book_dict["discount"] = valid_book_discounts[0] if valid_book_discounts else None
+            book_dict["author"] = author
+            book_dict["category"] = category
+            book_dict["rating"] = rating_dict
+
+            result.append(BookReadSimpleWithRating.model_validate(book_dict))
+
+        total_pages = (total_count + filter_params.size - 1) // filter_params.size if total_count > 0 else 0
+
+        return PaginatedResponse[BookReadSimpleWithRating](
+            data=result,
+            meta=PaginationMeta(
+                total=total_count,
+                page=filter_params.page,
+                size=filter_params.size,
+                total_pages=total_pages
+            )
+        )
 
     @staticmethod
     def get_book_by_id(book_id: int, db: Session) -> Optional[BookRead]:
         book = db.query(Book).filter(Book.id == book_id).first()
         if not book:
             return None
+
         discount = DiscountService.get_current_discount_for_book(book_id, db)
         author = AuthorService.get_author_by_id(book.author_id, db)
         category = CategoryService.get_category_by_id(book.category_id, db)
+
+        review_count = db.query(func.count(Review.id))\
+            .filter(Review.book_id == book_id)\
+            .scalar() or 0
+
         average_rating = ReviewService.get_average_rating_for_book(book_id, db)
+
+        rating_dict = {
+            "average_rating": average_rating.average_rating,
+            "review_count": review_count
+        }
+
         book_dict = {**book.__dict__}
         book_dict["discount"] = discount
         book_dict["author"] = author
         book_dict["category"] = category
-        book_dict["rating"] = average_rating
+        book_dict["rating"] = rating_dict
+
         return BookRead.model_validate(book_dict)
 
     @staticmethod
@@ -108,6 +255,7 @@ class BookService:
                 Book.id.label("book_id"),
                 Book,
                 func.count(Review.id).label("review_count"),
+                func.round(func.avg(Review.rating_star), 2).label("avg_rating"),
                 final_price
             )
             .outerjoin(Review, Book.id == Review.book_id)
@@ -123,6 +271,7 @@ class BookService:
         for row in query_result:
             book = row.Book
             review_count = row.review_count
+            avg_rating = round(float(row.avg_rating), 2) if row.avg_rating is not None else 0.0
 
             author = AuthorService.get_author_by_id(book.author_id, db)
             category = CategoryService.get_category_by_id(book.category_id, db)
@@ -137,6 +286,14 @@ class BookService:
             book_dict["author"] = author
             book_dict["category"] = category
             book_dict["review_count"] = review_count
+
+            # Add rating information
+            rating_dict = {
+                "review_count": review_count,
+                "average_rating": avg_rating
+            }
+            book_dict["rating"] = rating_dict
+
             result.append(BookReadSimpleWithReviewCount.model_validate(book_dict))
 
         return result

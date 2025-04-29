@@ -30,6 +30,7 @@ class ReviewRead(ReviewBase):
 
 class AverageRating(BaseModel):
     """Schema for average rating"""
+    review_count: Optional[int] = None
     average_rating: float
 
 class ReviewUpdate(ReviewBase):
