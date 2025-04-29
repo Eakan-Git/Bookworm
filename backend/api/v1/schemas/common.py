@@ -6,6 +6,7 @@ T = TypeVar("T")
 
 class PaginationMeta(BaseModel):
     total: int
+    total_pages: int
     page: int
     size: int
 

@@ -48,4 +48,10 @@ class BookController:
 
     @staticmethod
     def get_reviews_by_book_id(book_id: int, filter_params: ReviewFilter, db: Session) -> PaginatedResponse[ReviewRead]:
-        pass
+        book = BookService.get_book_by_id(book_id, db)
+        if not book:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Book not found with id {book_id}"
+            )
+        return BookService.get_reviews_by_book_id(book_id, filter_params, db)
