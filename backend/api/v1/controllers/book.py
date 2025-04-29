@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 from fastapi import HTTPException, status
 from typing import List
 from api.v1.schemas.common import PaginatedResponse, PaginationMeta
-from api.v1.schemas.book import BookRead
+from api.v1.schemas.book import BookRead, BookReadSimpleWithReviewCount
 from api.v1.schemas.query import BookFilter, ReviewFilter
 from api.v1.schemas.review import ReviewRead
 from api.v1.services.book import BookService
@@ -43,8 +43,8 @@ class BookController:
         return BookService.get_on_sale_books(db)
 
     @staticmethod
-    def get_popular_books(db: Session) -> List[BookRead]:
-        pass
+    def get_popular_books(db: Session) -> List[BookReadSimpleWithReviewCount]:
+        return BookService.get_popular_books(db)
 
     @staticmethod
     def get_reviews_by_book_id(book_id: int, filter_params: ReviewFilter, db: Session) -> PaginatedResponse[ReviewRead]:

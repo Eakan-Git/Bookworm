@@ -4,7 +4,7 @@ from typing import List
 
 from api.v1.schemas.common import PaginatedResponse
 from api.v1.schemas.review import ReviewRead
-from api.v1.schemas.book import BookRead, BookReadSimple
+from api.v1.schemas.book import BookRead, BookReadSimple, BookReadSimpleWithReviewCount
 from api.v1.schemas.query import BookFilter, ReviewFilter
 from api.v1.controllers.book import BookController
 from api.v1.dependencies.dependencies import get_db_session
@@ -19,6 +19,15 @@ router = APIRouter(prefix="/books")
             description="Retrieve books with biggest discounts.")
 def get_on_sale_books(db: Session = Depends(get_db_session)):
     return BookController.get_on_sale_books(db)
+
+
+@router.get("/popular",
+            response_model=List[BookReadSimpleWithReviewCount],
+            status_code=status.HTTP_200_OK,
+            summary="Get list of popular books",
+            description="Retrieve books with most reviews.")
+def get_popular_books(db: Session = Depends(get_db_session)):
+    return BookController.get_popular_books(db)
 
 
 @router.get("/{book_id}",
@@ -50,16 +59,14 @@ def list_books(
     avoiding the need for additional API calls (roundtrips).
 
     You can filter books by various criteria including:
-    - Text search (searches in title and summary)
     - Category ID
     - Author ID
-    - Price range (min and max)
+    - Rating
 
     You can also sort results by:
-    - Title
+    - On Sale (discount amount)
+    - Popularity (number of reviews)
     - Price
-    - Author name
-    - Category name
 
     If no books are found for the requested page, a 404 error is returned.
     """
