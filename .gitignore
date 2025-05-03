@@ -62,3 +62,4 @@ package-lock.json
 # Test artifacts
 **/htmlcov/
 private.key
+frontend/yarn.lock
