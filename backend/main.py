@@ -5,6 +5,7 @@ from api.v1.endpoints import author as author_endpoint
 from api.v1.endpoints import category as category_endpoint
 from api.v1.endpoints import book as book_endpoint
 from api.v1.endpoints import user as user_endpoint
+from api.v1.endpoints import auth as auth_endpoint
 from api.v1.endpoints import default as default_endpoint
 from fastapi import FastAPI
 from fastapi.logger import logger
@@ -60,6 +61,7 @@ def on_startup():
 
 # Include routers
 app.include_router(default_endpoint.router, prefix="/api/v1", tags=["Default"])
+app.include_router(auth_endpoint.router, prefix="/api/v1", tags=["Auth"])
 app.include_router(user_endpoint.router, prefix="/api/v1", tags=["User"])
 app.include_router(book_endpoint.router, prefix="/api/v1", tags=["Books v1"])
 app.include_router(category_endpoint.router, prefix="/api/v1", tags=["Categories v1"])

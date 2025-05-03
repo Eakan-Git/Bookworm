@@ -14,6 +14,7 @@ from models.review import Review
 from models.discount import Discount
 
 from database.postgres import PostgresDatabase
+from api.v1.utils.password import hash_password
 
 fake = Faker()
 
@@ -39,18 +40,47 @@ def seed_data(num_users=10, num_authors=5, num_categories=3, num_books=20,
     try:
         # 1. Create Users
         print(f"Creating {num_users} users...")
+
+        # Default password for all users
+        default_password = "password"
+
+        try:
+            # Try to hash the password
+            hashed_password = hash_password(default_password)
+            print(f"Password hashed successfully: {hashed_password[:20]}...")
+        except Exception as e:
+            # Fallback for development/testing only
+            print(f"Warning: Password hashing failed: {str(e)}")
+            print("Using plain text password for development only - NOT SECURE!")
+            hashed_password = default_password
+
         users = [
             User(
                 first_name=fake.first_name(),
                 last_name=fake.last_name(),
                 email=fake.email(),
-                password=fake.password(length=12),
+                password=hashed_password,  # Use hashed password
                 admin=i < 2  # Make first two users admins
             )
             for i in range(num_users)
         ]
         db.add_all(users)
         db.commit()
+
+        # Create a test user with a known email for easier testing
+        test_user = User(
+            first_name="Test",
+            last_name="User",
+            email="test@example.com",
+            password=hashed_password,
+            admin=True
+        )
+        db.add(test_user)
+        db.commit()
+
+        print(f"Created {len(users) + 1} users with default password: '{default_password}'")
+        print(f"Test user: test@example.com (password: {default_password})")
+        print(f"Admin users: {[user.email for user in users if user.admin] + ['test@example.com']}")
 
         # 2. Create Authors
         print(f"Creating {num_authors} authors...")
