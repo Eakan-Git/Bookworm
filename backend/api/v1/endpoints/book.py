@@ -3,10 +3,11 @@ from sqlalchemy.orm import Session
 from typing import List
 
 from api.v1.schemas.common import PaginatedResponse
-from api.v1.schemas.review import ReviewRead
+from api.v1.schemas.review import ReviewRead, ReviewCreate
 from api.v1.schemas.book import BookRead, BookReadSimple, BookReadSimpleWithReviewCount, BookReadSimpleWithRating
 from api.v1.schemas.query import BookFilter, ReviewFilter
 from api.v1.controllers.book import BookController
+from api.v1.controllers.review import ReviewController
 from api.v1.dependencies.dependencies import get_db_session
 
 router = APIRouter(prefix="/books")
@@ -70,3 +71,20 @@ def get_reviews_for_book(
     This endpoint returns reviews for a specific book, with filtering and sorting options.
     """
     return BookController.get_reviews_by_book_id(book_id, filter_params, db)
+
+
+@router.post("/{book_id}/reviews",
+             response_model=ReviewRead,
+             status_code=status.HTTP_201_CREATED,
+             summary="Create a new review for a book",
+             description="Create a new review for a specific book.")
+def create_review_for_book(
+    book_id: int,
+    review_data: ReviewCreate,
+    db: Session = Depends(get_db_session)
+):
+    """Create a new review for a specific book.
+
+    This endpoint creates a new review for a specific book.
+    """
+    return ReviewController.post_review_for_book(book_id, review_data, db)
