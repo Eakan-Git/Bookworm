@@ -8,8 +8,10 @@ services:
     ports:
       - "5173:5173"
     volumes:
+      # Mount the source code but exclude node_modules
       - ./frontend:/app
-      - /app/node_modules
+      # Create an anonymous volume for node_modules to keep it container-specific
+      - frontend_node_modules:/app/node_modules
     depends_on:
       - backend
     env_file: .env
@@ -24,7 +26,12 @@ services:
     ports:
       - "8000:8000"
     volumes:
+      # Mount the source code
       - ./backend:/app
+      # Create anonymous volumes for Python cache directories to keep them container-specific
+      - backend_pycache:/app/__pycache__
+      - backend_pycache_api:/app/api/__pycache__
+      - backend_pycache_api_v1:/app/api/v1/__pycache__
     depends_on:
       - db
     env_file: .env
@@ -48,4 +55,11 @@ networks:
     driver: bridge
 
 volumes:
+  # Database volume
   postgres_data:
+  # Frontend volumes
+  frontend_node_modules:
+  # Backend volumes
+  backend_pycache:
+  backend_pycache_api:
+  backend_pycache_api_v1:
