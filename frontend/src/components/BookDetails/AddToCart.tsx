@@ -25,14 +25,14 @@ export default function AddToCart({ book, onAddToCart }: { book: Book, onAddToCa
                 <p><span className="font-bold">{book.book_title}</span> has been added to your cart.</p>
                 <div className="modal-action">
                     <button className="btn btn-secondary" onClick={() => {
-                        const dialog = document.getElementById('add-to-cart-modal') as HTMLDialogElement;
+                        const dialog = document.getElementById('product-page-modal') as HTMLDialogElement;
                         dialog?.close();
                     }}>Close</button>
                 </div>
             </>
         );
 
-        const dialog = document.getElementById('add-to-cart-modal') as HTMLDialogElement;
+        const dialog = document.getElementById('product-page-modal') as HTMLDialogElement;
         dialog.showModal();
     };
 
