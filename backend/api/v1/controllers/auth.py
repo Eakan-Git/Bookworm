@@ -197,11 +197,11 @@ class AuthController:
                 detail="Invalid refresh token"
             )
 
-        # Check if token is valid in database
-        if not TokenService.is_valid(db, jti):
+        # Check if token is valid in database and verify the token hash
+        if not TokenService.verify_refresh_token(db, jti, refresh_token):
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Refresh token revoked or expired"
+                detail="Refresh token invalid, revoked, or expired"
             )
 
         # Revoke the used refresh token (token rotation for security)
@@ -271,16 +271,49 @@ class AuthController:
         )
 
     @staticmethod
-    def logout(response: Response) -> dict:
+    async def logout(response: Response, request: Request, db: Session) -> dict:
         """
-        Logout controller to clear cookies
+        Logout controller to clear cookies and revoke refresh token
 
         Args:
             response: FastAPI response object for clearing cookies
+            request: FastAPI request object for getting cookies/body
+            db: Database session
 
         Returns:
             Success message
         """
+        # Try to get refresh token from cookie first
+        refresh_token = request.cookies.get("refresh_token")
+
+        # If not in cookie, try to get from request body
+        if not refresh_token:
+            try:
+                data = await request.json()
+                refresh_token = data.get("refresh_token")
+            except:
+                pass
+
+        # If refresh token exists, revoke it in the database
+        if refresh_token:
+            try:
+                # Decode the token to get the JTI and user_id
+                payload = jwt.decode(refresh_token, SECRET_KEY, algorithms=[ALGORITHM])
+                jti = payload.get("jti")
+                user_id = payload.get("user_id")
+
+                # Revoke the specific token if JTI exists
+                if jti:
+                    TokenService.revoke_token(db, jti)
+
+                # Optional: Revoke all tokens for this user for extra security
+                # Uncomment the following lines to enable this behavior
+                # if user_id:
+                #     TokenService.revoke_all_user_tokens(db, user_id)
+            except JWTError:
+                # If token is invalid, just continue with logout
+                pass
+
         # Clear cookies
         response.delete_cookie(key="access_token")
         response.delete_cookie(key="refresh_token")

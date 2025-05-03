@@ -47,14 +47,20 @@ async def refresh_token(
     return await AuthController.refresh_token(response, request, db)
 
 @router.post("/logout")
-def logout(response: Response):
+async def logout(
+    response: Response,
+    request: Request,
+    db: Session = Depends(get_db_session)
+):
     """
-    Logout endpoint to clear cookies
+    Logout endpoint to clear cookies and revoke refresh token
 
     Args:
         response: FastAPI response object for clearing cookies
+        request: FastAPI request object for getting cookies/body
+        db: Database session
 
     Returns:
         Success message
     """
-    return AuthController.logout(response)
+    return await AuthController.logout(response, request, db)
