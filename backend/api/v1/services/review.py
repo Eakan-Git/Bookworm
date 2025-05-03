@@ -15,11 +15,10 @@ class ReviewService:
         return AverageRating(average_rating=float(avg_rating or 0))
 
     @staticmethod
-    def post_review_for_book(review_data: ReviewCreate, db: Session) -> ReviewRead:
-        review = Review(**review_data.model_dump())
-        logger.info(f"Creating review for book {review_data.book_id}")
-        logger.info(f"Review data: {review_data}")
-        logger.info(f"Review object: {review}")
+    def post_review_for_book(book_id: int, review_data: ReviewCreate, db: Session) -> ReviewRead:
+        review = Review(**review_data.model_dump(), book_id=book_id)
+        logger.info(f"Creating review for book {book_id}")
+        logger.info(f"Review data: {review}")
         db.add(review)
         db.commit()
         db.refresh(review)

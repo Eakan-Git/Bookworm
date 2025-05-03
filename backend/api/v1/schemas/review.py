@@ -15,7 +15,7 @@ class ReviewBase(BaseModel):
 
 class ReviewCreate(ReviewBase):
     """Schema for creating a new review"""
-    book_id: int
+    pass
 
 
 class ReviewRead(ReviewBase):
