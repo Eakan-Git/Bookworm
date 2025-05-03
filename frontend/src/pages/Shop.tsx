@@ -2,12 +2,12 @@ import PageLayout from "@/layouts/PageLayout";
 import SelectGroup from "@/components/SelectGroup/SelectGroup";
 import BookCardGrid, { BookCardGridSkeleton } from "@/components/BookCardGrid/BookCardGrid";
 import { bookService, BookFilterParams } from "@/api/bookService";
-import { categoryService } from "@/api/categoryClient";
+import { categoryService } from "@/api/categoryService";
 import { useQuery } from "@tanstack/react-query";
 import Pagination from "@/components/Pagination/Pagination";
 import { PaginationData } from "@/types/paginate";
 import { useState, useEffect, useCallback } from "react";
-import { authorService } from "@/api/authorClient";
+import { authorService } from "@/api/authorService";
 import { useSearchParams } from "react-router-dom";
 
 export default function Shop() {
