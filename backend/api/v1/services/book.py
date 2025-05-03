@@ -285,7 +285,6 @@ class BookService:
             book_dict["discount"] = valid_book_discounts[0] if valid_book_discounts else None
             book_dict["author"] = author
             book_dict["category"] = category
-            book_dict["review_count"] = review_count
 
             # Add rating information
             rating_dict = {

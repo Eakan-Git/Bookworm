@@ -49,7 +49,6 @@ class BookReadSimple(BookBase):
         from_attributes = True
 
 class BookReadSimpleWithReviewCount(BookReadSimple):
-    review_count: int
     rating: Optional[AverageRating] = None
 
 class BookReadSimpleWithRating(BookReadSimple):
