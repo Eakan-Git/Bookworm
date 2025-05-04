@@ -85,18 +85,17 @@ export default function LoginForm() {
 
     return (
         <dialog id="login-modal" className="modal" ref={modalRef}>
-            <div className="modal-box">
-                <form method="dialog" onSubmit={(e) => e.preventDefault()}>
+            <div className="modal-box w-full max-w-md">
+                <form method="dialog" onSubmit={(e) => e.preventDefault()} className="flex justify-end">
                     <button
-                        className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+                        className="btn btn-sm btn-circle btn-ghost"
                         onClick={closeModal}
                     >
                         ✕
                     </button>
                 </form>
 
-                <h3 className="font-bold text-lg mb-2">Sign In</h3>
-                <p className="text-sm mb-4">Please login to your account</p>
+                <h3 className="font-bold text-2xl mb-2">Sign In</h3>
 
                 {errorMessage && (
                     <div className="alert alert-error mb-4">
@@ -116,79 +115,52 @@ export default function LoginForm() {
                     </div>
                 )}
 
-                <form className="form-control w-full" onSubmit={handleSubmit}>
-                    <fieldset className="border rounded-md p-4 mb-4">
-                        <legend className="text-sm px-2">Account Information</legend>
+                <form className="space-y-4" onSubmit={handleSubmit}>
+                    <div className="form-control">
+                        <label className="label">
+                            <span className="label-text">Email</span>
+                        </label>
+                        <input
+                            type="email"
+                            placeholder="example@email.com"
+                            className="input input-bordered w-full"
+                            required
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                            disabled={isSubmitting}
+                        />
+                    </div>
 
-                        <div className="form-control mb-3">
-                            <label className="label">
-                                <span className="label-text">Email</span>
-                            </label>
-                            <label className="input input-bordered flex items-center gap-2">
-                                <svg className="h-4 w-4 opacity-70" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                                    <g
-                                        strokeLinejoin="round"
-                                        strokeLinecap="round"
-                                        strokeWidth="2"
-                                        fill="none"
-                                        stroke="currentColor"
-                                    >
-                                        <rect width="20" height="16" x="2" y="4" rx="2"></rect>
-                                        <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
-                                    </g>
-                                </svg>
-                                <input
-                                    type="email"
-                                    className="grow"
-                                    placeholder="example@email.com"
-                                    required
-                                    value={username}
-                                    onChange={(e) => setUsername(e.target.value)}
-                                    disabled={isSubmitting}
-                                />
-                            </label>
-                        </div>
-
-                        <div className="form-control mb-2">
-                            <label className="label">
-                                <span className="label-text">Password</span>
-                            </label>
-                            <label className="input input-bordered flex items-center gap-2">
-                                <svg className="h-4 w-4 opacity-70" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                                    <g
-                                        strokeLinejoin="round"
-                                        strokeLinecap="round"
-                                        strokeWidth="2"
-                                        fill="none"
-                                        stroke="currentColor"
-                                    >
-                                        <path d="M16.5 10.5V6.5a4.5 4.5 0 1 0-9 0v4"></path>
-                                        <rect width="18" height="12" x="3" y="10" rx="2"></rect>
-                                    </g>
-                                </svg>
-                                <input
-                                    type="password"
-                                    className="grow"
-                                    placeholder="Enter your password"
-                                    required
-                                    minLength={8}
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                    disabled={isSubmitting}
-                                />
-                            </label>
-                        </div>
-                    </fieldset>
+                    <div className="form-control">
+                        <label className="label">
+                            <span className="label-text">Password</span>
+                        </label>
+                        <input
+                            type="password"
+                            placeholder="Enter your password"
+                            className="input input-bordered w-full"
+                            required
+                            minLength={8}
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            disabled={isSubmitting}
+                        />
+                    </div>
 
                     <button
-                        className={`btn btn-primary w-full ${isSubmitting ? 'loading' : ''}`}
                         type="submit"
+                        className="btn btn-primary w-full flex items-center justify-center gap-2"
                         disabled={isSubmitting}
                     >
+                        {isSubmitting && (
+                            <span className="loading loading-spinner loading-sm"></span>
+                        )}
                         {isSubmitting ? 'Signing in...' : 'Sign In'}
                     </button>
+
                 </form>
             </div>
         </dialog>
+
     );
 }
