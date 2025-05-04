@@ -50,8 +50,8 @@ export default function ReviewForm({ onSubmit }: ReviewFormProps) {
                         {...register("review_title", {
                             required: "Review title is required",
                             maxLength: {
-                                value: 255,
-                                message: "Title must be less than 255 characters"
+                                value: 120,
+                                message: "Title must be less than 120 characters"
                             }
                         })}
                     />

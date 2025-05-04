@@ -24,7 +24,7 @@ interface BookCardGridSkeletonProps {
     items?: number;
 }
 
-export function BookCardGridSkeleton({ items = 8 }: BookCardGridSkeletonProps) {
+export function BookCardGridSkeleton({ items = 20 }: BookCardGridSkeletonProps) {
     return (
         <div className="w-full mx-auto p-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">

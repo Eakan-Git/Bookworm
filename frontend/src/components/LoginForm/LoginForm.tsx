@@ -1,5 +1,6 @@
 import { useState, FormEvent, useRef, useEffect } from 'react';
 import { useAuthStore } from '@/stores/authStore';
+import { useCartStore } from '@/stores/cartStore';
 
 export default function LoginForm() {
     const [username, setUsername] = useState('');
@@ -10,14 +11,22 @@ export default function LoginForm() {
     const [sessionExpired, setSessionExpired] = useState(false);
     const modalRef = useRef<HTMLDialogElement>(null);
 
-    const { login, error, isAuthenticated } = useAuthStore();
+    const { login, error, isAuthenticated, user } = useAuthStore();
+    const { migrateGuestCart, setCurrentUserId } = useCartStore();
 
     // Reset session expired state when user authenticates
+    // and migrate guest cart to user cart
     useEffect(() => {
         if (isAuthenticated) {
             setSessionExpired(false);
+
+            // Migrate guest cart to user cart when user logs in
+            if (user) {
+                migrateGuestCart(user.id);
+                setCurrentUserId(user.id);
+            }
         }
-    }, [isAuthenticated]);
+    }, [isAuthenticated, user, migrateGuestCart, setCurrentUserId]);
 
     // Function to show session expired message
     const showSessionExpiredMessage = () => {
@@ -71,6 +80,7 @@ export default function LoginForm() {
         setErrorMessage(null);
         setSuccessMessage(null);
         setSessionExpired(false);
+        modalRef.current?.close();
     };
 
     return (
