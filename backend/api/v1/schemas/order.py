@@ -7,7 +7,7 @@ from decimal import Decimal
 class OrderItemClientInput(BaseModel):
     """Schema for client input when creating an order item"""
     book_id: int
-    quantity: int = Field(gt=0, lt=8)
+    quantity: int = Field(gt=0, le=8)
     price: float  # Client's expected price
 
 

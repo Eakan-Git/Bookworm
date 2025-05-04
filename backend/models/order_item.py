@@ -13,7 +13,7 @@ class OrderItem(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     order_id: Optional[int] = Field(default=None, foreign_key="order.id")
     book_id: Optional[int] = Field(default=None, foreign_key="book.id")
-    quantity: int = Field(default=1)
+    quantity: int = Field(default=1, gt=0, le=8)
     price: Optional[Decimal] = Field(
         default=None,
         sa_column=Column(Numeric(5, 2))
