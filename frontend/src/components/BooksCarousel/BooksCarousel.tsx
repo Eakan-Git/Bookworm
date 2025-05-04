@@ -7,7 +7,7 @@ import { Book } from '@/types/book';
 
 export default function BooksCarousel({ books }: { books: Book[] }) {
   return (
-    <div className="w-11/12 mx-auto">
+    <div className="flex flex-col w-11/12 mx-auto">
       <div className="flex items-center gap-2 sm:gap-4 md:gap-6 lg:gap-8">
         <button
           className="custom-button-prev hidden md:block btn btn-circle"
@@ -42,6 +42,14 @@ export default function BooksCarousel({ books }: { books: Book[] }) {
           className="custom-button-next hidden md:block btn btn-circle"
           aria-label="Next"
         >
+          &#10095;
+        </button>
+      </div>
+      <div className="flex justify-center gap-2 mt-4 md:hidden">
+        <button className="custom-button-prev btn btn-circle">
+          &#10094;
+        </button>
+        <button className="custom-button-next btn btn-circle">
           &#10095;
         </button>
       </div>
