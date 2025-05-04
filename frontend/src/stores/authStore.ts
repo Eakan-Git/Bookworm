@@ -1,0 +1,117 @@
+import { create } from "zustand";
+import { authService } from "@/api/authService";
+import { jwtDecode } from "jwt-decode";
+
+interface AccessTokenPayload {
+  sub: string;
+  user_id: number;
+  first_name: string;
+  last_name: string;
+  admin: boolean;
+  exp: number;
+}
+
+interface AuthState {
+  accessToken: string | null;
+  user: {
+    id: number;
+    email: string;
+    firstName: string;
+    lastName: string;
+    fullName: string;
+    isAdmin: boolean;
+  } | null;
+  isAuthenticated: boolean;
+  isLoading: boolean;
+  error: string | null;
+  
+  // Actions
+  login: (email: string, password: string) => Promise<boolean>;
+  logout: () => Promise<void>;
+  setAccessToken: (token: string | null) => void;
+  clearAuth: () => void;
+}
+
+export const useAuthStore = create<AuthState>((set, get) => ({
+  accessToken: null,
+  user: null,
+  isAuthenticated: false,
+  isLoading: false,
+  error: null,
+
+  setAccessToken: (token: string | null) => {
+    if (!token) {
+      set({ accessToken: null, user: null, isAuthenticated: false });
+      return;
+    }
+
+    try {
+      const decoded = jwtDecode<AccessTokenPayload>(token);
+      
+      // Check if token is expired
+      const currentTime = Math.floor(Date.now() / 1000);
+      if (decoded.exp < currentTime) {
+        set({ accessToken: null, user: null, isAuthenticated: false });
+        return;
+      }
+
+      set({
+        accessToken: token,
+        user: {
+          id: decoded.user_id,
+          email: decoded.sub,
+          firstName: decoded.first_name,
+          lastName: decoded.last_name,
+          fullName: `${decoded.first_name} ${decoded.last_name}`,
+          isAdmin: decoded.admin,
+        },
+        isAuthenticated: true,
+      });
+    } catch (error) {
+      console.error("Failed to decode token:", error);
+      set({ accessToken: null, user: null, isAuthenticated: false });
+    }
+  },
+
+  login: async (username: string, password: string) => {
+    set({ isLoading: true, error: null });
+    try {
+      const response = await authService.login({ username, password });
+      const { access_token } = response.data;
+      
+      // Set the access token which will also set user info
+      get().setAccessToken(access_token);
+      
+      set({ isLoading: false });
+      return true;
+    } catch (error: any) {
+      console.error("Login error:", error);
+      set({ 
+        isLoading: false, 
+        error: error.response?.data?.detail || "Login failed. Please check your credentials."
+      });
+      return false;
+    }
+  },
+
+  logout: async () => {
+    set({ isLoading: true });
+    try {
+      await authService.logout();
+    } catch (error) {
+      console.error("Logout error:", error);
+    } finally {
+      get().clearAuth();
+      set({ isLoading: false });
+    }
+  },
+
+  clearAuth: () => {
+    set({
+      accessToken: null,
+      user: null,
+      isAuthenticated: false,
+      error: null,
+    });
+  },
+}));
