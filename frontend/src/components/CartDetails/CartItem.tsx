@@ -30,7 +30,9 @@ function CartItemComponent({ item, onIncreaseQuantity, onDecreaseQuantity }: Car
                     />
                 </div>
                 <div className="flex flex-col flex-1 overflow-hidden">
-                    <h4 className="text-left font-medium truncate">{item.book_title}</h4>
+                    <Link to={`/books/${item.id}`}>
+                        <h4 className="text-left font-medium truncate">{item.book_title}</h4>
+                    </Link>
                     <p className="text-sm text-base-content/60 truncate">{item.author.author_name}</p>
                 </div>
             </div>

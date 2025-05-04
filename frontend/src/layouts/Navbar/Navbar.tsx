@@ -37,7 +37,6 @@ const NavbarContent = () => {
                 <li>
                     <div className="dropdown dropdown-hover dropdown-end">
                         <div tabIndex={0} role="button" className="flex items-center gap-2">
-                            <User className="h-4 w-4" />
                             <span>{user.fullName}</span>
                         </div>
                         <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-10 w-52 p-2 shadow-sm">
@@ -73,52 +72,56 @@ const SidebarContent = () => {
     };
 
     return (
-        <>
-            {menuItems.map((item) => (
-                <li key={item.id}>
-                    <Link to={item.path || "#"} className="flex items-center space-x-2">
-                        {item.icon && <span className="text-lg">{item.icon}</span>}
-                        <span>{item.label}</span>
-                    </Link>
-                </li>
-            ))}
+        <div className="flex flex-col gap-2">
+            {/* Main navigation items */}
+            <ul className="menu gap-1">
+                {menuItems.map((item) => (
+                    <li key={item.id}>
+                        <Link to={item.path || "#"} className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-base-300 transition">
+                            {item.icon && <span className="text-lg">{item.icon}</span>}
+                            <span className="text-base">{item.label}</span>
+                        </Link>
+                    </li>
+                ))}
+            </ul>
 
+            {/* Divider */}
+            <div className="divider my-2" />
+
+            {/* Auth section */}
             {isAuthenticated && user ? (
-                <li>
-                    <div className="flex flex-col">
-                        <div className="flex items-center gap-2 px-4 py-2 font-medium">
-                            <User className="h-4 w-4" />
-                            <span>{user.fullName}</span>
-                        </div>
-                        <button
-                            onClick={handleLogout}
-                            className="flex items-center gap-2 px-4 py-2 hover:bg-base-200 rounded-lg mt-1"
-                        >
-                            <LogOut className="h-4 w-4" />
-                            <span>Logout</span>
-                        </button>
-                    </div>
-                </li>
-            ) : (
-                <li
-                    onClick={() => {
-                        (document.getElementById('login-modal') as HTMLDialogElement)?.showModal();
-                        // Close the drawer after clicking
-                        const drawerCheckbox = document.getElementById('my-drawer-3') as HTMLInputElement;
-                        if (drawerCheckbox) {
-                            drawerCheckbox.checked = false;
-                        }
-                    }}
-                >
-                    <a className="flex items-center space-x-2">
+                <div className="flex flex-col gap-1">
+                    <div className="flex items-center gap-3 px-3 py-2 font-medium text-base">
                         <User className="h-5 w-5" />
-                        <span>Sign In</span>
-                    </a>
-                </li>
+                        <span>{user.fullName}</span>
+                    </div>
+                    <button
+                        onClick={handleLogout}
+                        className="flex items-center gap-3 px-3 py-2 text-left rounded-lg hover:bg-base-300 transition"
+                    >
+                        <LogOut className="h-5 w-5 text-error" />
+                        <span>Logout</span>
+                    </button>
+                </div>
+            ) : (
+                <button
+                    onClick={() => {
+                        const modal = document.getElementById('login-modal') as HTMLDialogElement;
+                        modal?.showModal();
+
+                        const drawerCheckbox = document.getElementById('my-drawer-3') as HTMLInputElement;
+                        if (drawerCheckbox) drawerCheckbox.checked = false;
+                    }}
+                    className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-base-300 transition"
+                >
+                    <User className="h-5 w-5" />
+                    <span>Sign In</span>
+                </button>
             )}
-        </>
+        </div>
     );
-}
+};
+
 
 export default function Navbar({ children }: { children: React.ReactNode }) {
     return (
@@ -131,7 +134,9 @@ export default function Navbar({ children }: { children: React.ReactNode }) {
                     <div className="mx-2 flex-1 px-2">
                         <div className="flex items-center space-x-2">
                             <img src="/images/logo.png" alt="Logo" className="h-8 w-8" />
-                            <span className="text-lg font-bold">Bookworm</span>
+                            <Link to="/">
+                                <span className="text-lg font-bold">Bookworm</span>
+                            </Link>
                         </div>
                     </div>
                     <div className="hidden flex-none lg:block">
