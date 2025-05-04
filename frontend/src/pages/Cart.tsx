@@ -85,8 +85,8 @@ export default function Cart() {
                 book_id: item.id,
                 quantity: item.quantity,
                 price: item.discount?.discount_price &&
-                       typeof item.discount?.discount_price === "number" &&
-                       item.discount?.discount_price > 0
+                    typeof item.discount?.discount_price === "number" &&
+                    item.discount?.discount_price > 0
                     ? item.discount.discount_price
                     : item.book_price
             }));
