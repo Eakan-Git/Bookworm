@@ -1,9 +1,10 @@
 import { Review } from "@/types/review";
 import { useState } from "react";
-import { formatDate } from "@/utils/formatDate";
+import { useFormatDate } from "@/hooks/useFormatDate";
 
 export default function BookReview({ review }: { review: Review }) {
     const [isExpanded, setIsExpanded] = useState(false);
+    const formattedDate = useFormatDate(review.review_date);
 
     const toggleExpand = () => {
         setIsExpanded(!isExpanded);
@@ -55,7 +56,7 @@ export default function BookReview({ review }: { review: Review }) {
                 </button>
             )}
 
-            <p className="text-sm text-base-content/70">{formatDate(review.review_date)}</p>
+            <p className="text-sm text-base-content/70">{formattedDate}</p>
         </div>
     );
 }
