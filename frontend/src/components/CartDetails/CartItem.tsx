@@ -2,6 +2,7 @@ import type { CartItem } from "@/types/cartItem";
 import PriceDisplay from "@/components/PriceDisplay/PriceDisplay";
 import { Minus, Plus } from "lucide-react";
 import { memo } from "react";
+import { Link } from "react-router-dom";
 
 interface CartItemProps {
     item: CartItem;
@@ -82,7 +83,9 @@ function CartItemComponent({ item, onIncreaseQuantity, onDecreaseQuantity }: Car
                     />
                 </div>
                 <div className="flex flex-col overflow-hidden">
-                    <h4 className="text-left font-medium truncate">{item.book_title}</h4>
+                    <Link to={`/books/${item.id}`} className="hover:underline">
+                        <h4 className="text-left font-medium truncate">{item.book_title}</h4>
+                    </Link>
                     <p className="text-sm text-base-content/60 truncate">{item.author.author_name}</p>
                 </div>
             </div>
