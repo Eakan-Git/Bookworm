@@ -32,6 +32,30 @@ export default function Cart() {
             return;
         }
 
+        // Update modal content with new countdown value
+        if (countdown > 0) {
+            setModalContent(
+                <div className="p-4">
+                    <h3 className="text-lg font-bold mb-4">Order Placed Successfully!</h3>
+                    <p>Thank you for your order. Your books will be delivered soon.</p>
+                    <p className="mt-2">Redirecting to home page in <span className="font-bold">{countdown}</span> seconds...</p>
+                    <div className="modal-action">
+                        <button
+                            className="btn btn-primary"
+                            onClick={() => {
+                                clearCurrentCart();
+                                navigate('/');
+                                const dialog = document.getElementById('common-modal') as HTMLDialogElement;
+                                dialog?.close();
+                            }}
+                        >
+                            Go to Home
+                        </button>
+                    </div>
+                </div>
+            );
+        }
+
         const timer = setTimeout(() => {
             setCountdown(countdown - 1);
         }, 1000);
@@ -95,27 +119,8 @@ export default function Cart() {
             await orderService.createOrder(orderItems);
 
             // Show success modal with countdown
+            // Set initial countdown value - the useEffect will update the modal content
             setCountdown(10);
-            setModalContent(
-                <div className="p-4">
-                    <h3 className="text-lg font-bold mb-4">Order Placed Successfully!</h3>
-                    <p>Thank you for your order. Your books will be delivered soon.</p>
-                    <p className="mt-2">Redirecting to home page in <span className="font-bold">{countdown}</span> seconds...</p>
-                    <div className="modal-action">
-                        <button
-                            className="btn btn-primary"
-                            onClick={() => {
-                                clearCurrentCart();
-                                navigate('/');
-                                const dialog = document.getElementById('common-modal') as HTMLDialogElement;
-                                dialog?.close();
-                            }}
-                        >
-                            Go to Home
-                        </button>
-                    </div>
-                </div>
-            );
 
             const dialog = document.getElementById('common-modal') as HTMLDialogElement;
             dialog?.showModal();

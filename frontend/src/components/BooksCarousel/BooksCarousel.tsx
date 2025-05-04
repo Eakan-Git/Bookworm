@@ -22,7 +22,6 @@ export default function BooksCarousel({ books }: { books: Book[] }) {
             nextEl: '.custom-button-next',
             prevEl: '.custom-button-prev',
           }}
-          loop
           spaceBetween={16}
           slidesPerView={1}
           breakpoints={{

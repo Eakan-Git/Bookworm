@@ -10,6 +10,7 @@ import { PaginationData } from "@/types/paginate";
 import { useState, useEffect, useCallback } from "react";
 import { authorService } from "@/api/authorService";
 import { useSearchParams } from "react-router-dom";
+import { Filter } from "lucide-react";
 
 export default function Shop() {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -187,13 +188,82 @@ export default function Shop() {
 
     // if (isLoading) return <PageLayout pageTitle="Loading...">Loading...</PageLayout>;
 
+    // This component is no longer used since we've redesigned the mobile filters
+    // Keeping it for reference in case we need to revert
+    const _UnusedMobileFilterDropdown = ({
+        title,
+        options,
+        selectedValue,
+        onChange
+    }: {
+        title: string,
+        options: { name: string, value: string }[],
+        selectedValue?: string,
+        onChange: (value: string) => void
+    }) => {
+        return (
+            <div className="dropdown dropdown-bottom w-full">
+                <div tabIndex={0} role="button" className="btn btn-outline w-full justify-between">
+                    <span>{title}</span>
+                    <span>{selectedValue ? options.find(opt => opt.value === selectedValue)?.name : 'All'}</span>
+                </div>
+                <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-full max-h-60 overflow-y-auto">
+                    <li>
+                        <a
+                            className={selectedValue === undefined ? "active" : ""}
+                            onClick={() => onChange("")}
+                        >
+                            All
+                        </a>
+                    </li>
+                    {options.map((option) => (
+                        <li key={option.value}>
+                            <a
+                                className={selectedValue === option.value ? "active" : ""}
+                                onClick={() => onChange(option.value)}
+                            >
+                                {option.name}
+                            </a>
+                        </li>
+                    ))}
+                </ul>
+            </div>
+        );
+    };
+
+    // Handler for mobile filter changes
+    const handleMobileCategoryChange = (value: string) => {
+        setFilters((prev: BookFilterParams) => ({
+            ...prev,
+            category_id: value ? parseInt(value) : undefined,
+            page: 1,
+        }));
+    };
+
+    const handleMobileAuthorChange = (value: string) => {
+        setFilters((prev: BookFilterParams) => ({
+            ...prev,
+            author_id: value ? parseInt(value) : undefined,
+            page: 1,
+        }));
+    };
+
+    const handleMobileRatingChange = (value: string) => {
+        setFilters((prev: BookFilterParams) => ({
+            ...prev,
+            rating_star: value ? parseInt(value) : undefined,
+            page: 1,
+        }));
+    };
+
     return (
         <PageLayout pageTitle="Books" titleChildren={currentTitleTrailing}>
-            <div className="flex justify-between gap-4">
+            {/* Desktop layout (hidden on mobile) */}
+            <div className="hidden md:flex justify-between gap-4">
                 <aside className="flex flex-col gap-4 w-48">
                     <SelectGroup
                         header="Category"
-                        options={categories?.data.map((category) => ({
+                        options={categories?.data?.map((category) => ({
                             name: category.category_name,
                             value: category.id.toString()
                         })) ?? []}
@@ -202,7 +272,7 @@ export default function Shop() {
                     />
                     <SelectGroup
                         header="Author"
-                        options={authors?.data.map((author) => ({
+                        options={authors?.data?.map((author) => ({
                             name: author.author_name,
                             value: author.id.toString()
                         })) ?? []}
@@ -218,7 +288,7 @@ export default function Shop() {
                 </aside>
                 <main className="flex-1">
                     <div className="flex flex-col">
-                        <div className="flex justify-between items-center">
+                        <div className="flex justify-between items-center mb-4">
                             <p>Showing {startItem}-{endItem} of {totalBooks} books</p>
                             <div className="flex gap-2">
                                 <select
@@ -266,6 +336,223 @@ export default function Shop() {
                         }
                     </div>
                 </main>
+            </div>
+
+            {/* Mobile layout (hidden on md and larger screens) */}
+            <div className="md:hidden">
+                <div className="mb-4">
+                    {/* Mobile filter chips */}
+                    <div className="flex flex-wrap gap-2 mb-4">
+                        <div className="dropdown dropdown-bottom">
+                            <div tabIndex={0} role="button" className={`btn btn-sm ${filters.category_id ? 'btn-primary' : 'btn-outline'}`}>
+                                Category
+                            </div>
+                            <div tabIndex={0} className="dropdown-content z-[1] shadow bg-base-100 rounded-box w-64">
+                                <div className="max-h-[40vh] overflow-y-auto">
+                                    <ul className="menu menu-sm p-2">
+                                        <li>
+                                            <a
+                                                className={filters.category_id === undefined ? "active" : ""}
+                                                onClick={() => handleMobileCategoryChange("")}
+                                            >
+                                                All Categories
+                                            </a>
+                                        </li>
+                                        {categories?.data?.map((category) => (
+                                            <li key={category.id}>
+                                                <a
+                                                    className={filters.category_id === category.id ? "active" : ""}
+                                                    onClick={() => handleMobileCategoryChange(category.id.toString())}
+                                                >
+                                                    <span className="truncate">{category.category_name}</span>
+                                                </a>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="dropdown dropdown-bottom">
+                            <div tabIndex={0} role="button" className={`btn btn-sm ${filters.author_id ? 'btn-primary' : 'btn-outline'}`}>
+                                Author
+                            </div>
+                            <div tabIndex={0} className="dropdown-content z-[1] shadow bg-base-100 rounded-box w-64">
+                                <div className="max-h-[40vh] overflow-y-auto">
+                                    <ul className="menu menu-sm p-2">
+                                        <li>
+                                            <a
+                                                className={filters.author_id === undefined ? "active" : ""}
+                                                onClick={() => handleMobileAuthorChange("")}
+                                            >
+                                                All Authors
+                                            </a>
+                                        </li>
+                                        {authors?.data?.map((author) => (
+                                            <li key={author.id}>
+                                                <a
+                                                    className={filters.author_id === author.id ? "active" : ""}
+                                                    onClick={() => handleMobileAuthorChange(author.id.toString())}
+                                                >
+                                                    <span className="truncate">{author.author_name}</span>
+                                                </a>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="dropdown dropdown-bottom">
+                            <div tabIndex={0} role="button" className={`btn btn-sm ${filters.rating_star ? 'btn-primary' : 'btn-outline'}`}>
+                                Rating
+                            </div>
+                            <div tabIndex={0} className="dropdown-content z-[1] shadow bg-base-100 rounded-box w-64">
+                                <ul className="menu menu-sm p-2">
+                                    <li>
+                                        <a
+                                            className={filters.rating_star === undefined ? "active" : ""}
+                                            onClick={() => handleMobileRatingChange("")}
+                                        >
+                                            Any Rating
+                                        </a>
+                                    </li>
+                                    {ratingOptions.map((option) => (
+                                        <li key={option.value}>
+                                            <a
+                                                className={filters.rating_star === parseInt(option.value) ? "active" : ""}
+                                                onClick={() => handleMobileRatingChange(option.value)}
+                                            >
+                                                {option.name}
+                                            </a>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div className="dropdown dropdown-bottom">
+                            <div tabIndex={0} role="button" className="btn btn-sm btn-outline">
+                                Sort
+                            </div>
+                            <div tabIndex={0} className="dropdown-content z-[1] shadow bg-base-100 rounded-box w-64">
+                                <ul className="menu menu-sm p-2">
+                                    <li>
+                                        <a
+                                            className={filters.sort_by === 'on_sale' ? "active" : ""}
+                                            onClick={() => handleSortChange({ target: { value: 'on_sale' } } as any)}
+                                        >
+                                            On Sale
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a
+                                            className={filters.sort_by === 'popularity' ? "active" : ""}
+                                            onClick={() => handleSortChange({ target: { value: 'popularity' } } as any)}
+                                        >
+                                            Popularity
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a
+                                            className={filters.sort_by === 'price_asc' ? "active" : ""}
+                                            onClick={() => handleSortChange({ target: { value: 'price_asc' } } as any)}
+                                        >
+                                            Price: Low to High
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a
+                                            className={filters.sort_by === 'price_desc' ? "active" : ""}
+                                            onClick={() => handleSortChange({ target: { value: 'price_desc' } } as any)}
+                                        >
+                                            Price: High to Low
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div className="dropdown dropdown-bottom">
+                            <div tabIndex={0} role="button" className="btn btn-sm btn-outline">
+                                Show {filters.size}
+                            </div>
+                            <div tabIndex={0} className="dropdown-content z-[1] shadow bg-base-100 rounded-box">
+                                <ul className="menu menu-sm p-2">
+                                    {[5, 10, 15, 20, 25].map(size => (
+                                        <li key={size}>
+                                            <a
+                                                className={filters.size === size ? "active" : ""}
+                                                onClick={() => handleSizeChange({ target: { value: size.toString() } } as any)}
+                                            >
+                                                Show {size}
+                                            </a>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Active filters display */}
+                    {(filters.category_id || filters.author_id || filters.rating_star) && (
+                        <div className="flex flex-wrap gap-2 mb-4">
+                            {filters.category_id && categories?.data && (
+                                <div className="badge badge-primary gap-1">
+                                    {categories.data.find(c => c.id === filters.category_id)?.category_name}
+                                    <button className="btn btn-xs btn-circle btn-ghost" onClick={() => handleMobileCategoryChange("")}>×</button>
+                                </div>
+                            )}
+                            {filters.author_id && authors?.data && (
+                                <div className="badge badge-primary gap-1">
+                                    {authors.data.find(a => a.id === filters.author_id)?.author_name}
+                                    <button className="btn btn-xs btn-circle btn-ghost" onClick={() => handleMobileAuthorChange("")}>×</button>
+                                </div>
+                            )}
+                            {filters.rating_star && (
+                                <div className="badge badge-primary gap-1">
+                                    {ratingOptions.find(r => parseInt(r.value) === filters.rating_star)?.name}
+                                    <button className="btn btn-xs btn-circle btn-ghost" onClick={() => handleMobileRatingChange("")}>×</button>
+                                </div>
+                            )}
+                            {(filters.category_id || filters.author_id || filters.rating_star) && (
+                                <button
+                                    className="btn btn-xs btn-outline"
+                                    onClick={() => {
+                                        setFilters(prev => ({
+                                            ...prev,
+                                            category_id: undefined,
+                                            author_id: undefined,
+                                            rating_star: undefined,
+                                            page: 1
+                                        }));
+                                    }}
+                                >
+                                    Clear All
+                                </button>
+                            )}
+                        </div>
+                    )}
+
+                    <p className="text-sm pb-2">Showing {startItem}-{endItem} of {totalBooks} books</p>
+                </div>
+
+                {
+                    isLoading ? (
+                        <BookCardGridSkeleton />
+                    ) :
+                        isError ? (
+                            <p className="text-center text-2xl">No books found.</p>
+                        ) :
+                            (
+                                <>
+                                    <BookCardGrid books={books?.data?.data || []} className="py-2" />
+                                    <div className="flex justify-center mt-4">
+                                        <Pagination data={paginationData} onChange={handlePageChange} />
+                                    </div>
+                                </>
+                            )
+                }
             </div>
         </PageLayout>
     );

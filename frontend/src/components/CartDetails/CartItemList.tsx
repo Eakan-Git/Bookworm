@@ -1,6 +1,7 @@
 import { useCartStore } from "@/stores/cartStore";
 import CartItemComponent from "@/components/CartDetails/CartItem";
 import { useCallback } from "react";
+import { Link } from "react-router-dom";
 
 export default function CartItemListComponent() {
     const { getCurrentCart, increaseQuantity, decreaseQuantity } = useCartStore();
@@ -16,6 +17,27 @@ export default function CartItemListComponent() {
         decreaseQuantity(id);
     }, [decreaseQuantity]);
 
+    // Empty cart state
+    if (cart.length === 0) {
+        return (
+            <div className="flex flex-col border border-base-content/20 rounded-sm">
+                <div className="bg-base-200 p-4">
+                    <h4 className="text-center font-bold">Your Cart Items</h4>
+                </div>
+
+                <div className="flex flex-col items-center justify-center p-8 text-center">
+                    <div className="flex flex-col items-center gap-4">
+                        <p className="text-base-content/70">Looks like your cart is empty!</p>
+                        <Link to="/shop" className="btn btn-primary">
+                            Browse Books
+                        </Link>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    // Cart with items
     return (
         <div className="flex flex-col border border-base-content/20 rounded-sm">
             <div className="lg:hidden bg-base-200 p-4">
