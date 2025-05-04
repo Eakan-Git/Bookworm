@@ -3,7 +3,10 @@ import CartItemComponent from "@/components/CartDetails/CartItem";
 import { useCallback } from "react";
 
 export default function CartItemListComponent() {
-    const { cart, increaseQuantity, decreaseQuantity } = useCartStore();
+    const { getCurrentCart, increaseQuantity, decreaseQuantity } = useCartStore();
+
+    // Get the current cart items
+    const cart = getCurrentCart();
 
     const handleIncreaseQuantity = useCallback((id: number) => {
         increaseQuantity(id);

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useAuthStore } from '@/stores/authStore';
+import { useCartStore } from '@/stores/cartStore';
 import { authService } from '@/api/authService';
 
 /**
@@ -8,7 +9,20 @@ import { authService } from '@/api/authService';
  */
 export default function AuthInitializer() {
   const [isInitializing, setIsInitializing] = useState(true);
-  const { setAccessToken } = useAuthStore();
+  const { setAccessToken, user } = useAuthStore();
+  const { migrateGuestCart, setCurrentUserId } = useCartStore();
+
+  // Effect to handle user authentication state changes
+  useEffect(() => {
+    if (user) {
+      // User logged in - migrate guest cart and set current user ID
+      migrateGuestCart(user.id);
+      setCurrentUserId(user.id);
+    } else {
+      // User logged out - set current user ID to null (guest mode)
+      setCurrentUserId(null);
+    }
+  }, [user, migrateGuestCart, setCurrentUserId]);
 
   useEffect(() => {
     const initializeAuth = async () => {

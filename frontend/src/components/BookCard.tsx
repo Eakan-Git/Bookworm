@@ -4,7 +4,7 @@ import PriceDisplay from '@/components/PriceDisplay/PriceDisplay';
 
 export default function BookCard({ book }: { book: Book }) {
     return (
-        <Link to={`/books/${book.id}`} target='_blank' className="w-full block">
+        <Link to={`/books/${book.id}`} className="w-full block">
             <div className="card bg-base-100 w-full shadow-sm rounded-sm hover:shadow-lg hover:cursor-pointer transition-shadow duration-300 h-full">
                 <figure className="w-full h-52 sm:h-64 md:h-72 overflow-hidden">
                     <img

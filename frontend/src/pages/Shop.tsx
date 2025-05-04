@@ -1,7 +1,8 @@
 import PageLayout from "@/layouts/PageLayout";
 import SelectGroup from "@/components/SelectGroup/SelectGroup";
 import BookCardGrid, { BookCardGridSkeleton } from "@/components/BookCardGrid/BookCardGrid";
-import { bookService, BookFilterParams } from "@/api/bookService";
+import { bookService } from "@/api/bookService";
+import { BookFilterParams } from "@/types/book";
 import { categoryService } from "@/api/categoryService";
 import { useQuery } from "@tanstack/react-query";
 import Pagination from "@/components/Pagination/Pagination";
@@ -12,10 +13,10 @@ import { useSearchParams } from "react-router-dom";
 
 export default function Shop() {
     const [searchParams, setSearchParams] = useSearchParams();
-
+    const [currentTitleTrailing, setCurrentTitleTrailing] = useState<string>('');
     const [filters, setFilters] = useState<BookFilterParams>({
         page: parseInt(searchParams.get('page') || '1'),
-        size: parseInt(searchParams.get('size') || '10'),
+        size: parseInt(searchParams.get('size') || '20'),
         category_id: searchParams.get('category_id') ? parseInt(searchParams.get('category_id')!) : undefined,
         author_id: searchParams.get('author_id') ? parseInt(searchParams.get('author_id')!) : undefined,
         rating_star: searchParams.get('rating_star') ? parseInt(searchParams.get('rating_star')!) : undefined,
@@ -50,7 +51,7 @@ export default function Shop() {
 
     const [paginationData, setPaginationData] = useState<PaginationData>({
         current_page: filters.page || 1,
-        total_pages: 10,
+        total_pages: 20,
     });
 
     const updatePaginationData = useCallback(() => {
@@ -71,7 +72,7 @@ export default function Shop() {
         const newParams = new URLSearchParams();
 
         if (filters.page && filters.page > 1) newParams.set('page', filters.page.toString());
-        if (filters.size && filters.size !== 10) newParams.set('size', filters.size.toString());
+        if (filters.size && filters.size !== 20) newParams.set('size', filters.size.toString());
         if (filters.category_id) newParams.set('category_id', filters.category_id.toString());
         if (filters.author_id) newParams.set('author_id', filters.author_id.toString());
         if (filters.rating_star) newParams.set('rating_star', filters.rating_star.toString());
@@ -84,9 +85,47 @@ export default function Shop() {
         updateUrlParams();
     }, [updateUrlParams]);
 
+    // Function to update the filter text based on current filters
+    const updateFilterText = useCallback(() => {
+        const filterTexts = [];
+
+        // Add category filter text if present
+        if (filters.category_id && categories?.data) {
+            const category = categories.data.find(cat => cat.id === filters.category_id);
+            if (category) {
+                filterTexts.push(`Category: ${category.category_name}`);
+            }
+        }
+
+        // Add author filter text if present
+        if (filters.author_id && authors?.data) {
+            const author = authors.data.find(auth => auth.id === filters.author_id);
+            if (author) {
+                filterTexts.push(`Author: ${author.author_name}`);
+            }
+        }
+
+        // Add rating filter text if present
+        if (filters.rating_star) {
+            const ratingOption = ratingOptions.find(opt => parseInt(opt.value) === filters.rating_star);
+            if (ratingOption) {
+                filterTexts.push(`Rating: ${ratingOption.name}`);
+            }
+        }
+
+        // Join all filter texts with commas
+        const filterText = filterTexts.length > 0 ? `Filtered by ${filterTexts.join(', ')}` : '';
+        setCurrentTitleTrailing(filterText);
+    }, [filters, categories?.data, authors?.data, ratingOptions]);
+
+    // Update filter text whenever filters or data changes
+    useEffect(() => {
+        updateFilterText();
+    }, [updateFilterText]);
+
     const handleCategoryChange = useCallback((e: React.MouseEvent<HTMLInputElement>) => {
         const categoryId = parseInt(e.currentTarget.value);
-        setFilters(prev => ({
+        setFilters((prev: BookFilterParams) => ({
             ...prev,
             category_id: prev.category_id === categoryId ? undefined : categoryId,
             page: 1,
@@ -95,7 +134,7 @@ export default function Shop() {
 
     const handleAuthorChange = useCallback((e: React.MouseEvent<HTMLInputElement>) => {
         const authorId = parseInt(e.currentTarget.value);
-        setFilters(prev => ({
+        setFilters((prev: BookFilterParams) => ({
             ...prev,
             author_id: prev.author_id === authorId ? undefined : authorId,
             page: 1,
@@ -104,7 +143,7 @@ export default function Shop() {
 
     const handleRatingChange = useCallback((e: React.MouseEvent<HTMLInputElement>) => {
         const rating = parseInt(e.currentTarget.value);
-        setFilters(prev => ({
+        setFilters((prev: BookFilterParams) => ({
             ...prev,
             rating_star: prev.rating_star === rating ? undefined : rating,
             page: 1,
@@ -112,7 +151,7 @@ export default function Shop() {
     }, []);
 
     const handleSortChange = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
-        setFilters(prev => ({
+        setFilters((prev: BookFilterParams) => ({
             ...prev,
             sort_by: e.target.value as BookFilterParams['sort_by'],
             page: 1,
@@ -120,7 +159,7 @@ export default function Shop() {
     }, []);
 
     const handleSizeChange = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
-        setFilters(prev => ({
+        setFilters((prev: BookFilterParams) => ({
             ...prev,
             size: parseInt(e.target.value),
             page: 1,
@@ -128,7 +167,7 @@ export default function Shop() {
     }, []);
 
     const handlePageChange = useCallback((page: number) => {
-        setFilters(prev => ({
+        setFilters((prev: BookFilterParams) => ({
             ...prev,
             page,
         }));
@@ -137,7 +176,7 @@ export default function Shop() {
     const displayInfo = useCallback(() => {
         const totalBooks = books?.data?.meta?.total || 0;
         const currentPage = paginationData.current_page;
-        const pageSize = filters.size || 10;
+        const pageSize = filters.size || 20;
         const startItem = totalBooks === 0 ? 0 : (currentPage - 1) * pageSize + 1;
         const endItem = Math.min(currentPage * pageSize, totalBooks);
 
@@ -149,7 +188,7 @@ export default function Shop() {
     // if (isLoading) return <PageLayout pageTitle="Loading...">Loading...</PageLayout>;
 
     return (
-        <PageLayout pageTitle="Books">
+        <PageLayout pageTitle="Books" titleChildren={currentTitleTrailing}>
             <div className="flex justify-between gap-4">
                 <aside className="flex flex-col gap-4 w-48">
                     <SelectGroup
@@ -197,7 +236,7 @@ export default function Shop() {
                                 <select
                                     id="size"
                                     name="size"
-                                    value={filters.size || 10}
+                                    value={filters.size || 20}
                                     onChange={handleSizeChange}
                                     className="select w-auto"
                                 >
