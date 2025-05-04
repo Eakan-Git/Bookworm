@@ -7,6 +7,7 @@ from api.v1.endpoints import book as book_endpoint
 from api.v1.endpoints import user as user_endpoint
 from api.v1.endpoints import auth as auth_endpoint
 from api.v1.endpoints import default as default_endpoint
+from api.v1.endpoints import order as order_endpoint
 from fastapi import FastAPI
 from fastapi.logger import logger
 from fastapi.middleware.cors import CORSMiddleware
@@ -66,6 +67,7 @@ app.include_router(user_endpoint.router, prefix="/api/v1", tags=["User"])
 app.include_router(book_endpoint.router, prefix="/api/v1", tags=["Books v1"])
 app.include_router(category_endpoint.router, prefix="/api/v1", tags=["Categories v1"])
 app.include_router(author_endpoint.router, prefix="/api/v1", tags=["Authors v1"])
+app.include_router(order_endpoint.router, prefix="/api/v1", tags=["Orders v1"])
 
 def get_db() -> Generator[Session, None, None]:
     with db_instance.get_session() as db:
