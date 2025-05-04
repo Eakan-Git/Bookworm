@@ -154,7 +154,7 @@ function BookReviews({ reviews, onFilterChange, filters, book }: BookReviewsProp
                 </div>
             ) : (
                 <div className="flex justify-center items-center py-8">
-                    <p className="text-base-content/70">No reviews found. Be the first to review this book!</p>
+                    <p className="text-base-content/70">No reviews found.</p>
                 </div>
             )}
 

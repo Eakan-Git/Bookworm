@@ -13,7 +13,7 @@ import { useSearchParams } from "react-router-dom";
 
 export default function Shop() {
     const [searchParams, setSearchParams] = useSearchParams();
-
+    const [currentTitleTrailing, setCurrentTitleTrailing] = useState<string>('');
     const [filters, setFilters] = useState<BookFilterParams>({
         page: parseInt(searchParams.get('page') || '1'),
         size: parseInt(searchParams.get('size') || '20'),
@@ -85,6 +85,44 @@ export default function Shop() {
         updateUrlParams();
     }, [updateUrlParams]);
 
+    // Function to update the filter text based on current filters
+    const updateFilterText = useCallback(() => {
+        const filterTexts = [];
+
+        // Add category filter text if present
+        if (filters.category_id && categories?.data) {
+            const category = categories.data.find(cat => cat.id === filters.category_id);
+            if (category) {
+                filterTexts.push(`Category: ${category.category_name}`);
+            }
+        }
+
+        // Add author filter text if present
+        if (filters.author_id && authors?.data) {
+            const author = authors.data.find(auth => auth.id === filters.author_id);
+            if (author) {
+                filterTexts.push(`Author: ${author.author_name}`);
+            }
+        }
+
+        // Add rating filter text if present
+        if (filters.rating_star) {
+            const ratingOption = ratingOptions.find(opt => parseInt(opt.value) === filters.rating_star);
+            if (ratingOption) {
+                filterTexts.push(`Rating: ${ratingOption.name}`);
+            }
+        }
+
+        // Join all filter texts with commas
+        const filterText = filterTexts.length > 0 ? `Filtered by ${filterTexts.join(', ')}` : '';
+        setCurrentTitleTrailing(filterText);
+    }, [filters, categories?.data, authors?.data, ratingOptions]);
+
+    // Update filter text whenever filters or data changes
+    useEffect(() => {
+        updateFilterText();
+    }, [updateFilterText]);
+
     const handleCategoryChange = useCallback((e: React.MouseEvent<HTMLInputElement>) => {
         const categoryId = parseInt(e.currentTarget.value);
         setFilters((prev: BookFilterParams) => ({
@@ -150,7 +188,7 @@ export default function Shop() {
     // if (isLoading) return <PageLayout pageTitle="Loading...">Loading...</PageLayout>;
 
     return (
-        <PageLayout pageTitle="Books">
+        <PageLayout pageTitle="Books" titleChildren={currentTitleTrailing}>
             <div className="flex justify-between gap-4">
                 <aside className="flex flex-col gap-4 w-48">
                     <SelectGroup
