@@ -1,4 +1,4 @@
-import axios, { AxiosError, AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from "axios";
+import axios, { AxiosError, InternalAxiosRequestConfig } from "axios";
 import { useAuthStore } from "@/stores/authStore";
 import { authService } from "@/api/authService";
 import { showLoginModal } from "@/utils/authUtils";
@@ -66,8 +66,16 @@ axiosClient.interceptors.response.use(
     async (error: AxiosError) => {
         const originalRequest = error.config as InternalAxiosRequestConfig;
 
-        // If the error is not 401 or the request already tried to refresh, reject
-        if (!error.response || error.response.status !== 401 || (originalRequest as any)._retry) {
+        // Get the URL from the original request
+        const requestUrl = originalRequest.url || '';
+
+        // Skip token refresh for login endpoint or if not 401 or already retried
+        if (
+            !error.response ||
+            error.response.status !== 401 ||
+            (originalRequest as any)._retry ||
+            requestUrl.includes('/auth/login')
+        ) {
             return Promise.reject(error);
         }
 

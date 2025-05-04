@@ -1,4 +1,5 @@
 import { useState, FormEvent, useRef, useEffect } from 'react';
+import { Check, XCircle } from 'lucide-react';
 import { useAuthStore } from '@/stores/authStore';
 import { useCartStore } from '@/stores/cartStore';
 
@@ -11,42 +12,45 @@ export default function LoginForm() {
     const [sessionExpired, setSessionExpired] = useState(false);
     const modalRef = useRef<HTMLDialogElement>(null);
 
+    // Clear error message when user types
+    const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setUsername(e.target.value);
+        if (errorMessage) setErrorMessage(null);
+    };
+
+    const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setPassword(e.target.value);
+        if (errorMessage) setErrorMessage(null);
+    };
+
     const { login, error, isAuthenticated, user } = useAuthStore();
     const { migrateGuestCart, setCurrentUserId } = useCartStore();
 
-    // Reset session expired state when user authenticates
-    // and migrate guest cart to user cart
     useEffect(() => {
-        if (isAuthenticated) {
+        if (isAuthenticated && user) {
             setSessionExpired(false);
-
-            // Migrate guest cart to user cart when user logs in
-            if (user) {
-                migrateGuestCart(user.id);
-                setCurrentUserId(user.id);
-            }
+            migrateGuestCart(user.id);
+            setCurrentUserId(user.id);
         }
     }, [isAuthenticated, user, migrateGuestCart, setCurrentUserId]);
 
-    // Function to show session expired message
     const showSessionExpiredMessage = () => {
         setSessionExpired(true);
         setErrorMessage('Your session has expired. Please login again.');
     };
 
-    // Expose the function globally for the axios interceptor to use
     useEffect(() => {
-        // @ts-ignore - Adding a property to window
+        // @ts-ignore
         window.showSessionExpiredMessage = showSessionExpiredMessage;
-
         return () => {
-            // @ts-ignore - Cleanup
+            // @ts-ignore
             delete window.showSessionExpiredMessage;
         };
     }, []);
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        if (isSubmitting) return;
         setErrorMessage(null);
         setSuccessMessage(null);
         setIsSubmitting(true);
@@ -55,14 +59,12 @@ export default function LoginForm() {
             const success = await login(username, password);
             if (success) {
                 setSuccessMessage('Login successful! Redirecting...');
-                // Close the modal after a short delay
                 setTimeout(() => {
                     modalRef.current?.close();
-                    // Reset form
                     setUsername('');
                     setPassword('');
                     setSuccessMessage(null);
-                }, 1500);
+                }, 500);
             } else {
                 setErrorMessage(error || 'Login failed. Please try again.');
             }
@@ -88,79 +90,81 @@ export default function LoginForm() {
             <div className="modal-box w-full max-w-md">
                 <form method="dialog" onSubmit={(e) => e.preventDefault()} className="flex justify-end">
                     <button
+                        type="button"
                         className="btn btn-sm btn-circle btn-ghost"
                         onClick={closeModal}
+                        disabled={isSubmitting}
                     >
                         ✕
                     </button>
                 </form>
 
-                <h3 className="font-bold text-2xl mb-2">Sign In</h3>
+                <h3 className="font-bold text-2xl mb-4 text-center">Sign In</h3>
 
-                {errorMessage && (
-                    <div className="alert alert-error mb-4">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                        <span>{errorMessage}</span>
+                {successMessage ? (
+                    <div className="flex flex-col items-center justify-center py-12">
+                        <Check className="w-16 h-16 text-success mb-4" strokeWidth={2.5} />
+                        <p className="text-success text-lg font-medium">{successMessage}</p>
                     </div>
-                )}
-
-                {successMessage && (
-                    <div className="alert alert-success mb-4">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                        <span>{successMessage}</span>
-                    </div>
-                )}
-
-                <form className="space-y-4" onSubmit={handleSubmit}>
-                    <div className="form-control">
-                        <label className="label">
-                            <span className="label-text">Email</span>
-                        </label>
-                        <input
-                            type="email"
-                            placeholder="example@email.com"
-                            className="input input-bordered w-full"
-                            required
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)}
-                            disabled={isSubmitting}
-                        />
-                    </div>
-
-                    <div className="form-control">
-                        <label className="label">
-                            <span className="label-text">Password</span>
-                        </label>
-                        <input
-                            type="password"
-                            placeholder="Enter your password"
-                            className="input input-bordered w-full"
-                            required
-                            minLength={8}
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            disabled={isSubmitting}
-                        />
-                    </div>
-
-                    <button
-                        type="submit"
-                        className="btn btn-primary w-full flex items-center justify-center gap-2"
-                        disabled={isSubmitting}
-                    >
-                        {isSubmitting && (
-                            <span className="loading loading-spinner loading-sm"></span>
+                ) : (
+                    <form className="space-y-4" onSubmit={handleSubmit}>
+                        {errorMessage && (
+                            <div className="alert alert-error text-error-content">
+                                <XCircle className="w-5 h-5" />
+                                <span>{errorMessage}</span>
+                            </div>
                         )}
-                        {isSubmitting ? 'Signing in...' : 'Sign In'}
-                    </button>
 
-                </form>
+                        {sessionExpired && !errorMessage && (
+                            <div className="alert alert-warning">
+                                <span>Your session has expired. Please login again.</span>
+                            </div>
+                        )}
+
+                        <div className="form-control">
+                            <label className="label">
+                                <span className="label-text">Email</span>
+                            </label>
+                            <input
+                                type="email"
+                                placeholder="example@email.com"
+                                className={`input input-bordered w-full ${errorMessage ? 'input-error' : ''}`}
+                                required
+                                value={username}
+                                onChange={handleUsernameChange}
+                                disabled={isSubmitting}
+                            />
+                        </div>
+
+                        <div className="form-control">
+                            <label className="label">
+                                <span className="label-text">Password</span>
+                            </label>
+                            <input
+                                type="password"
+                                placeholder="Enter your password"
+                                className={`input input-bordered w-full ${errorMessage ? 'input-error' : ''}`}
+                                required
+                                minLength={8}
+                                value={password}
+                                onChange={handlePasswordChange}
+                                disabled={isSubmitting}
+                            />
+                        </div>
+
+                        <button
+                            type="submit"
+                            className="btn btn-primary w-full flex items-center justify-center gap-2"
+                            disabled={isSubmitting}
+                        >
+                            {isSubmitting && (
+                                <span className="loading loading-spinner loading-sm" />
+                            )}
+                            {isSubmitting ? 'Signing in...' : 'Sign In'}
+                        </button>
+                    </form>
+                )}
             </div>
         </dialog>
-
     );
 }
