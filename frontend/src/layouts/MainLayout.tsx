@@ -3,7 +3,6 @@ import Navbar from '@/layouts/Navbar/Navbar';
 import Footer from '@/layouts/Footer';
 import LoginForm from '@/components/LoginForm/LoginForm';
 import AuthInitializer from '@/components/Auth/AuthInitializer';
-import CloseOnClickOutSideModal from '@/components/CloseOnClickOutSideModal';
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
     return (
