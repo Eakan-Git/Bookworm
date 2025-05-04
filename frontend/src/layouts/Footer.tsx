@@ -1,5 +1,5 @@
 
-import CurrencySelector from "@/components/CurrencySelector/CurrencySelector";
+import LocaleSelector from "@/components/LocaleSelector/LocaleSelector";
 
 export default function Footer() {
     return (
@@ -14,7 +14,7 @@ export default function Footer() {
                     <span>Phone</span>
                 </div>
             </div>
-            <CurrencySelector />
+            <LocaleSelector />
         </footer>
     );
 }

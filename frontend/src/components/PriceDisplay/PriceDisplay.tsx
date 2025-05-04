@@ -1,5 +1,4 @@
-import { useCurrencyStore } from "@/stores/currencyStore";
-import { formatPrice } from "@/utils/formatCurrency";
+import { useFormatPrice } from "@/hooks/useFormatPrice";
 
 interface PriceDisplayProps {
     price: number;
@@ -7,10 +6,11 @@ interface PriceDisplayProps {
 }
 
 export default function PriceDisplay({ price, className }: PriceDisplayProps) {
-    const currency = useCurrencyStore(state => state.currency);
+    const formattedPrice = useFormatPrice(price);
+
     return (
         <p className={className}>
-            {formatPrice(price, currency)}
+            {formattedPrice}
         </p>
     );
 }

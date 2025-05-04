@@ -1,8 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import i18next from "i18next";
-
-type Language = "en-US" | "vi-VN";
+import { Language } from "@/types/language";
 
 type LocaleState = {
     language: Language;
