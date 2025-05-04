@@ -24,7 +24,7 @@ interface AuthState {
   isAuthenticated: boolean;
   isLoading: boolean;
   error: string | null;
-  
+
   // Actions
   login: (email: string, password: string) => Promise<boolean>;
   logout: () => Promise<void>;
@@ -47,7 +47,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
     try {
       const decoded = jwtDecode<AccessTokenPayload>(token);
-      
+
       // Check if token is expired
       const currentTime = Math.floor(Date.now() / 1000);
       if (decoded.exp < currentTime) {
@@ -78,17 +78,35 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     try {
       const response = await authService.login({ username, password });
       const { access_token } = response.data;
-      
+
       // Set the access token which will also set user info
       get().setAccessToken(access_token);
-      
+
       set({ isLoading: false });
       return true;
     } catch (error: any) {
       console.error("Login error:", error);
-      set({ 
-        isLoading: false, 
-        error: error.response?.data?.detail || "Login failed. Please check your credentials."
+
+      // Handle different types of errors
+      let errorMessage = "Login failed. Please check your credentials.";
+
+      if (error.response) {
+        // The server responded with an error status
+        if (error.response.status === 401) {
+          errorMessage = error.response.data?.detail || "Incorrect email or password";
+        } else if (error.response.status >= 500) {
+          errorMessage = "Server error. Please try again later.";
+        } else {
+          errorMessage = error.response.data?.detail || errorMessage;
+        }
+      } else if (error.request) {
+        // The request was made but no response was received
+        errorMessage = "No response from server. Please check your internet connection.";
+      }
+
+      set({
+        isLoading: false,
+        error: errorMessage
       });
       return false;
     }
