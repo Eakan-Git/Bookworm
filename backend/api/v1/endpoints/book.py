@@ -31,6 +31,15 @@ def get_popular_books(db: Session = Depends(get_db_session)):
     return BookController.get_popular_books(db)
 
 
+@router.get("/recommended",
+            response_model=List[BookReadSimpleWithRating],
+            status_code=status.HTTP_200_OK,
+            summary="Get list of recommended books",
+            description="Retrieve books with highest average rating.")
+def get_recommended_books(db: Session = Depends(get_db_session)):
+    return BookController.get_recommended_books(db)
+
+
 @router.get("/{book_id}",
             response_model=BookRead,
             status_code=status.HTTP_200_OK,

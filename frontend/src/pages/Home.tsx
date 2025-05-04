@@ -3,7 +3,7 @@ import { ChevronRight } from "lucide-react";
 import BooksCarousel from "@/components/BooksCarousel/BooksCarousel";
 import { useNavigate } from 'react-router-dom';
 import { bookService } from "@/api/bookService";
-import { useQuery } from '@tanstack/react-query'
+import { useQuery } from '@tanstack/react-query';
 import BookCardGrid from "@/components/BookCardGrid/BookCardGrid";
 import TabsContainer from "@/components/TabsContainer/TabsContainer";
 
@@ -33,6 +33,11 @@ export default function Home() {
         queryKey: ['popular'],
         queryFn: () => bookService.getPopular(),
     });
+    const { data: recommendedBooks } = useQuery({
+        queryKey: ['recommended'],
+        queryFn: () => bookService.getRecommended(),
+    });
+
     return (
         <>
             <CollectionContainer
@@ -46,11 +51,11 @@ export default function Home() {
                 tabs={[
                     {
                         name: "Recommended",
-                        content: <BookCardGrid books={popularBooks?.data || []} className="md:w-10/12" />
+                        content: <BookCardGrid books={recommendedBooks?.data || []} className="md:w-10/12" />
                     },
                     {
                         name: "Popular",
-                        content: <BookCardGrid books={[...(onSaleBooks?.data || [])].reverse()} className="md:w-10/12" />
+                        content: <BookCardGrid books={popularBooks?.data || []} className="md:w-10/12" />
                     }
                 ]}
             />

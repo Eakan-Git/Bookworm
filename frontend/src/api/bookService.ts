@@ -7,6 +7,7 @@ const API_BASE_ROUTE = "/api/v1/books";
 export const bookService = {
     getOnSale: () => axiosClient.get<Book[]>(`${API_BASE_ROUTE}/on-sale`),
     getPopular: () => axiosClient.get<Book[]>(`${API_BASE_ROUTE}/popular`),
+    getRecommended: () => axiosClient.get<Book[]>(`${API_BASE_ROUTE}/recommended`),
     getById: (id: number) => axiosClient.get<Book>(`${API_BASE_ROUTE}/${id}`),
     getBooks: (params: BookFilterParams = {}) => {
         const queryParams = new URLSearchParams();

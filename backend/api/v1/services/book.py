@@ -298,6 +298,82 @@ class BookService:
         return result
 
     @staticmethod
+    def get_recommended_books(db: Session) -> List[BookReadSimpleWithRating]:
+        """
+        Recommended: get top 8 books with highest average rating, and if multiple books have
+        the same rating, sort by lowest final price
+        """
+        today = date.today()
+        valid_discounts = (
+            db.query(
+                Discount.book_id,
+                func.min(Discount.discount_price).label("discount_price")
+            )
+            .filter(
+                or_(
+                    Discount.discount_end_date == None,
+                    Discount.discount_end_date > today
+                )
+            )
+            .group_by(Discount.book_id)
+            .subquery()
+        )
+
+        # Calculate final price for sorting - use the discount price directly if available
+        final_price = case(
+            (valid_discounts.c.discount_price.is_(None), Book.book_price),
+            else_=valid_discounts.c.discount_price
+        ).label("final_price")
+
+        # Get average rating and review count
+        avg_rating = func.coalesce(func.round(func.avg(Review.rating_star), 2), 0.0).label("avg_rating")
+        review_count = func.count(Review.id).label("review_count")
+
+        query_result = (
+            db.query(
+                Book,
+                avg_rating,
+                review_count,
+                final_price
+            )
+            .outerjoin(Review, Book.id == Review.book_id)
+            .outerjoin(valid_discounts, Book.id == valid_discounts.c.book_id)
+            .options(joinedload(Book.discounts))
+            .group_by(Book.id, valid_discounts.c.discount_price, Book.book_price)
+            # Sort by highest average rating first, then by lowest final price
+            .order_by(desc(avg_rating), final_price)
+            .limit(8)
+            .all()
+        )
+
+        result = []
+        for row in query_result:
+            book = row.Book
+            avg_rating = round(float(row.avg_rating), 2) if row.avg_rating is not None else 0.0
+            review_count = row.review_count
+            author = AuthorService.get_author_by_id(book.author_id, db)
+            category = CategoryService.get_category_by_id(book.category_id, db)
+
+            valid_book_discounts = [
+                d for d in book.discounts
+                if d.discount_end_date is None or d.discount_end_date > today
+            ]
+            valid_book_discounts.sort(key=lambda d: book.book_price - d.discount_price, reverse=True)
+
+            book_dict = book.__dict__.copy()
+            book_dict["discount"] = valid_book_discounts[0] if valid_book_discounts else None
+            book_dict["author"] = author
+            book_dict["category"] = category
+            rating_dict = {
+                "average_rating": avg_rating,
+                "review_count": review_count
+            }
+            book_dict["rating"] = rating_dict
+            result.append(BookReadSimpleWithRating.model_validate(book_dict))
+
+        return result
+
+    @staticmethod
     def get_reviews_by_book_id(book_id: int, filter_params: ReviewFilter, db: Session) -> PaginatedResponse[ReviewRead]:
         query = db.query(Review).filter(Review.book_id == book_id)
 

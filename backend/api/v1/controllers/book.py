@@ -40,6 +40,10 @@ class BookController:
         return BookService.get_popular_books(db)
 
     @staticmethod
+    def get_recommended_books(db: Session) -> List[BookReadSimpleWithRating]:
+        return BookService.get_recommended_books(db)
+
+    @staticmethod
     def get_reviews_by_book_id(book_id: int, filter_params: ReviewFilter, db: Session) -> PaginatedResponse[ReviewRead]:
         book = BookService.get_book_by_id(book_id, db)
         if not book:
