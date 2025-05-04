@@ -16,7 +16,77 @@ export default function AddToCart({ book, onAddToCart }: { book: Book, onAddToCa
 
     const handleAddToCart = () => {
         const currentQuantity = getBookQuantity(book.id);
-        if (currentQuantity + quantity > cartConfig.maxQuantity) return;
+
+        // Case 1: Book already at max quantity in cart
+        if (currentQuantity >= cartConfig.maxQuantity) {
+            onAddToCart(
+                <>
+                    <h3 className="text-lg pb-4">Maximum Quantity Reached</h3>
+                    <p>You already have the maximum quantity ({cartConfig.maxQuantity}) of <span className="font-bold">{book.book_title}</span> in your cart.</p>
+                    <div className="modal-action">
+                        <button className="btn btn-secondary" onClick={() => {
+                            const dialog = document.getElementById('product-page-modal') as HTMLDialogElement;
+                            dialog?.close();
+                        }}>Close</button>
+                    </div>
+                </>
+            );
+
+            const dialog = document.getElementById('product-page-modal') as HTMLDialogElement;
+            dialog.showModal();
+            return;
+        }
+
+        // Case 2: Adding would exceed max quantity
+        if (currentQuantity + quantity > cartConfig.maxQuantity) {
+            const allowedToAdd = cartConfig.maxQuantity - currentQuantity;
+
+            // Add the maximum allowed quantity
+            addToCart(book, allowedToAdd);
+
+            onAddToCart(
+                <>
+                    <h3 className="text-lg pb-4">Maximum Quantity Reached</h3>
+                    <p>You can only add {allowedToAdd} more of <span className="font-bold">{book.book_title}</span> to your cart.</p>
+                    <p>Your cart has been updated with the maximum allowed quantity ({cartConfig.maxQuantity}).</p>
+                    <div className="modal-action">
+                        <button className="btn btn-secondary" onClick={() => {
+                            const dialog = document.getElementById('product-page-modal') as HTMLDialogElement;
+                            dialog?.close();
+                        }}>Close</button>
+                    </div>
+                </>
+            );
+
+            const dialog = document.getElementById('product-page-modal') as HTMLDialogElement;
+            dialog.showModal();
+            return;
+        }
+
+        // Case 3: Book already in cart but not at max quantity
+        if (currentQuantity > 0) {
+            addToCart(book, quantity);
+
+            onAddToCart(
+                <>
+                    <h3 className="text-lg pb-4">Cart Updated!</h3>
+                    <p>The quantity of <span className="font-bold">{book.book_title}</span> in your cart has been updated.</p>
+                    <p>New quantity: {currentQuantity + quantity}</p>
+                    <div className="modal-action">
+                        <button className="btn btn-secondary" onClick={() => {
+                            const dialog = document.getElementById('product-page-modal') as HTMLDialogElement;
+                            dialog?.close();
+                        }}>Close</button>
+                    </div>
+                </>
+            );
+
+            const dialog = document.getElementById('product-page-modal') as HTMLDialogElement;
+            dialog.showModal();
+            return;
+        }
+
+        // Case 4: New book added to cart
         addToCart(book, quantity);
 
         onAddToCart(
@@ -64,4 +134,4 @@ export default function AddToCart({ book, onAddToCart }: { book: Book, onAddToCa
             </div>
         </>
     );
-}   
+}
