@@ -12,6 +12,13 @@ import { ReviewFilterParams, ReviewFormValues } from "@/types/review";
 import { Book } from "@/types/book";
 import { ReviewsResponse } from "@/types/review";
 
+// Add the reviewCountdownTimer property to the Window interface
+declare global {
+    interface Window {
+        reviewCountdownTimer?: number;
+    }
+}
+
 const ReviewsSection = memo(({
     reviews,
     isLoading,
@@ -117,8 +124,21 @@ export default function BookDetails() {
                         <p className="text-base-content text-center font-bold">Closing in {countdown} seconds...</p>
                         <div className="modal-action">
                             <button className="btn btn-secondary" onClick={() => {
+                                // Refetch data immediately when user clicks close
+                                queryClient.invalidateQueries({ queryKey: ['book', bookId] });
+                                queryClient.invalidateQueries({ queryKey: ['reviews', bookId] });
+                                refetchBook();
+                                refetchReviews();
+
+                                // Close the modal
                                 const dialog = document.getElementById('product-page-modal') as HTMLDialogElement;
                                 dialog?.close();
+
+                                // Clear the interval to stop the countdown
+                                if (window.reviewCountdownTimer) {
+                                    clearInterval(window.reviewCountdownTimer);
+                                    window.reviewCountdownTimer = undefined;
+                                }
                             }}>Close</button>
                         </div>
                     </>
@@ -133,11 +153,15 @@ export default function BookDetails() {
             dialog.showModal();
 
             // Set up the countdown timer
-            const timer = setInterval(() => {
+            // Store the timer ID in the window object so we can clear it when the user clicks close
+            window.reviewCountdownTimer = setInterval(() => {
                 countdown -= 1;
 
                 if (countdown <= 0) {
-                    clearInterval(timer);
+                    if (window.reviewCountdownTimer) {
+                        clearInterval(window.reviewCountdownTimer);
+                        window.reviewCountdownTimer = undefined;
+                    }
 
                     // When countdown reaches 0, refetch data and close modal
                     queryClient.invalidateQueries({ queryKey: ['book', bookId] });
