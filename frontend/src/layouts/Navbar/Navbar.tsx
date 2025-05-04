@@ -1,14 +1,21 @@
 import { Link } from 'react-router-dom';
-import { Menu } from "lucide-react";
+import { Menu, LogOut, User } from "lucide-react";
 import { menuItems } from "@/layouts/Navbar/Menu";
 import { useLocation } from 'react-router-dom';
 import { useCartStore } from "@/stores/cartStore";
+import { useAuthStore } from "@/stores/authStore";
 
 const NavbarContent = () => {
     const location = useLocation();
     const currentPath = location.pathname;
     const { getItemQuantity } = useCartStore();
+    const { isAuthenticated, user, logout } = useAuthStore();
     const itemQuantity = getItemQuantity();
+
+    const handleLogout = async () => {
+        await logout();
+    };
+
     return (
         <>
             {menuItems.map((item) => (
@@ -25,20 +32,46 @@ const NavbarContent = () => {
                     </Link>
                 </li>
             ))}
-            <li
-                onClick={() => {
-                    console.log("Sign In clicked");
-                }}
-            >
-                <a>
-                    Sign In
-                </a>
-            </li>
+
+            {isAuthenticated && user ? (
+                <li>
+                    <div className="dropdown dropdown-hover dropdown-end">
+                        <div tabIndex={0} role="button" className="flex items-center gap-2">
+                            <User className="h-4 w-4" />
+                            <span>{user.fullName}</span>
+                        </div>
+                        <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-10 w-52 p-2 shadow-sm">
+                            <li>
+                                <button onClick={handleLogout} className="flex items-center gap-2">
+                                    <LogOut className="h-4 w-4" />
+                                    <span>Logout</span>
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+            ) : (
+                <li
+                    onClick={() => {
+                        (document.getElementById('login-modal') as HTMLDialogElement)?.showModal()
+                    }}
+                >
+                    <a className="cursor-pointer">
+                        Sign In
+                    </a>
+                </li>
+            )}
         </>
     );
 }
 
 const SidebarContent = () => {
+    const { isAuthenticated, user, logout } = useAuthStore();
+
+    const handleLogout = async () => {
+        await logout();
+    };
+
     return (
         <>
             {menuItems.map((item) => (
@@ -49,6 +82,40 @@ const SidebarContent = () => {
                     </Link>
                 </li>
             ))}
+
+            {isAuthenticated && user ? (
+                <li>
+                    <div className="flex flex-col">
+                        <div className="flex items-center gap-2 px-4 py-2 font-medium">
+                            <User className="h-4 w-4" />
+                            <span>{user.fullName}</span>
+                        </div>
+                        <button
+                            onClick={handleLogout}
+                            className="flex items-center gap-2 px-4 py-2 hover:bg-base-200 rounded-lg mt-1"
+                        >
+                            <LogOut className="h-4 w-4" />
+                            <span>Logout</span>
+                        </button>
+                    </div>
+                </li>
+            ) : (
+                <li
+                    onClick={() => {
+                        (document.getElementById('login-modal') as HTMLDialogElement)?.showModal();
+                        // Close the drawer after clicking
+                        const drawerCheckbox = document.getElementById('my-drawer-3') as HTMLInputElement;
+                        if (drawerCheckbox) {
+                            drawerCheckbox.checked = false;
+                        }
+                    }}
+                >
+                    <a className="flex items-center space-x-2">
+                        <User className="h-5 w-5" />
+                        <span>Sign In</span>
+                    </a>
+                </li>
+            )}
         </>
     );
 }
