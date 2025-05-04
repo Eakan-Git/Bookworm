@@ -1,9 +1,10 @@
 import BookReview from "@components/BookDetails/BookReview";
 import { ReviewFilterParams, ReviewsResponse } from "@/types/review";
-import Pagination from "@components/Pagination/Pagination";
 import { PaginationData } from "@/types/paginate";
 import { useCallback, memo } from "react";
 import { Book } from "@/types/book";
+import ResponsivePagination from "./ResponsivePagination";
+import "./BookReviews.css";
 
 interface BookReviewsProps {
     book_review_count?: number;
@@ -93,9 +94,8 @@ function BookReviews({ reviews, onFilterChange, filters, book }: BookReviewsProp
 
             <div className="flex flex-wrap gap-4">
                 <p
-                    className={`cursor-pointer hover:underline ${
-                        filters.rating_star === undefined ? 'font-bold underline' : ''
-                    }`}
+                    className={`cursor-pointer hover:underline ${filters.rating_star === undefined ? 'font-bold underline' : ''
+                        }`}
                     onClick={() => handleStarFilterChange(undefined)}
                 >
                     ({bookReviewCount} {bookReviewCount === 1 ? 'review' : 'reviews'})
@@ -131,7 +131,7 @@ function BookReviews({ reviews, onFilterChange, filters, book }: BookReviewsProp
                         <option value="oldest">Sort by date: Oldest to newest</option>
                     </select>
                     <select
-                        className="select select-bordered select-sm"
+                        className="select select-bordered select-sm w-auto"
                         value={size.toString()}
                         onChange={handleSizeChange}
                     >
@@ -160,8 +160,10 @@ function BookReviews({ reviews, onFilterChange, filters, book }: BookReviewsProp
 
             {/* Pagination */}
             {reviews.meta.total_pages > 1 && (
-                <div className="flex justify-center mt-4">
-                    <Pagination data={paginationData} onChange={handlePaginationChange} />
+                <div className="flex justify-center mt-4 overflow-x-auto w-full">
+                    <div className="responsive-pagination">
+                        <ResponsivePagination data={paginationData} onChange={handlePaginationChange} />
+                    </div>
                 </div>
             )}
         </div>

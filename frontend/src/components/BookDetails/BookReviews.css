@@ -1,0 +1,33 @@
+/* Responsive pagination styles */
+.responsive-pagination {
+  display: inline-flex;
+  max-width: 100%;
+  width: 100%;
+}
+
+.responsive-pagination .join {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.25rem;
+  width: 100%;
+}
+
+/* Medium screens */
+@media (max-width: 768px) {
+  .responsive-pagination .join .btn {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+}
+
+/* Small screens */
+@media (max-width: 640px) {
+  .responsive-pagination .join .btn {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    min-height: 2.25rem;
+    height: 2.25rem;
+    font-size: 0.8125rem;
+  }
+}
