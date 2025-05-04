@@ -68,8 +68,44 @@ class OrderRead(OrderBase):
         from_attributes = True
 
 
-class PriceMismatchError(BaseModel):
-    """Schema for price mismatch error response"""
+class SimplifiedDiscount(BaseModel):
+    """Simplified discount schema with string dates for JSON serialization"""
+    discount_start_date: Optional[str] = None
+    discount_end_date: Optional[str] = None
+    discount_price: Optional[float] = None
+    id: int
     book_id: int
+
+
+class SimplifiedAuthor(BaseModel):
+    """Simplified author schema for JSON serialization"""
+    author_name: str
+    author_bio: Optional[str] = None
+    id: int
+
+
+class SimplifiedCategory(BaseModel):
+    """Simplified category schema for JSON serialization"""
+    category_name: str
+    category_desc: Optional[str] = None
+    id: int
+
+
+class MismatchedBook(BaseModel):
+    """Book with price mismatch information for JSON serialization"""
+    id: int
+    book_title: str
+    book_summary: Optional[str] = None
+    book_price: Optional[float] = None
+    book_cover_photo: Optional[str] = None
+    category: Optional[SimplifiedCategory] = None
+    author: Optional[SimplifiedAuthor] = None
+    discount: Optional[SimplifiedDiscount] = None
+    # Price mismatch information
     expected_price: float
     actual_price: float
+
+
+class PriceMismatchError(BaseModel):
+    """Schema for price mismatch error"""
+    mismatches: List[MismatchedBook]

@@ -22,6 +22,7 @@ interface CartStore {
     migrateGuestCart: (userId: number) => void;
     clearCurrentCart: () => void;
     getCurrentCart: () => CartItem[];
+    updateMismatchedPrices: (mismatches: {book_id: number, actual_price: number}[]) => void;
 }
 
 export const useCartStore = create<CartStore>()(
@@ -264,6 +265,63 @@ export const useCartStore = create<CartStore>()(
                             };
                             return { userCarts: updatedUserCarts };
                         }
+                        return state; // No changes if user cart not found
+                    }
+                });
+            },
+
+            // Update only the mismatched prices in the cart
+            updateMismatchedPrices: (mismatches) => {
+                set((state) => {
+                    const currentCart = state.getCurrentCart();
+
+                    // Create a map of mismatched prices by book ID for faster lookup
+                    const mismatchMap = new Map(
+                        mismatches.map(mismatch => [mismatch.book_id, mismatch.actual_price])
+                    );
+
+                    // Update only the mismatched items in the cart
+                    const updatedCart = currentCart.map(item => {
+                        const newPrice = mismatchMap.get(item.id);
+
+                        if (newPrice !== undefined) {
+                            // Only update the price and total, keep everything else the same
+                            const updatedItem: CartItem = {
+                                ...item,
+                                book_price: newPrice,
+                                total: item.quantity * newPrice
+                            };
+
+                            // If the item has a discount, update it to reflect the new price
+                            if (updatedItem.discount) {
+                                updatedItem.discount = {
+                                    ...updatedItem.discount,
+                                    discount_price: newPrice // Use the new price as the discount price
+                                };
+                            }
+
+                            return updatedItem;
+                        }
+
+                        return item;
+                    });
+
+                    // Update the appropriate cart
+                    if (state.currentUserId === null) {
+                        return { guestCart: updatedCart };
+                    } else {
+                        const userCartIndex = state.userCarts.findIndex(cart => cart.userId === state.currentUserId);
+
+                        if (userCartIndex >= 0) {
+                            // Update existing user cart
+                            const updatedUserCarts = [...state.userCarts];
+                            updatedUserCarts[userCartIndex] = {
+                                ...updatedUserCarts[userCartIndex],
+                                items: updatedCart
+                            };
+                            return { userCarts: updatedUserCarts };
+                        }
+
                         return state; // No changes if user cart not found
                     }
                 });

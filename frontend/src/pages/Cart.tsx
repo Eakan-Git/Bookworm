@@ -7,12 +7,12 @@ import CartItemList from "@/components/CartDetails/CartItemList";
 import CartTotals from "@/components/CartDetails/CartTotals";
 import CloseOnClickOutSideModal from "@/components/CloseOnClickOutSideModal";
 import { orderService } from "@/api/orderService";
-import { PlacedOrderItem } from "@/types/order";
+import { PlacedOrderItem, PriceMismatchError } from "@/types/order";
 import { showLoginModal } from "@/utils/authUtils";
 
 export default function Cart() {
     const navigate = useNavigate();
-    const { getCurrentCart, getItemQuantity, clearCurrentCart, migrateGuestCart } = useCartStore();
+    const { getCurrentCart, getItemQuantity, clearCurrentCart, migrateGuestCart, updateMismatchedPrices } = useCartStore();
     const { isAuthenticated, user } = useAuthStore();
     const [modalContent, setModalContent] = useState<React.ReactNode>(null);
     const [countdown, setCountdown] = useState<number | null>(null);
@@ -131,34 +131,41 @@ export default function Cart() {
             if (error.response?.status === 400 && error.response?.data?.detail?.mismatches) {
                 const mismatches = error.response.data.detail.mismatches;
 
+                // Update only the mismatched prices in the cart
+                if (mismatches && mismatches.length > 0) {
+                    // Convert the new format to the format expected by updateMismatchedPrices
+                    const priceUpdates = mismatches.map((mismatch: PriceMismatchError) => ({
+                        book_id: mismatch.id,
+                        actual_price: mismatch.actual_price
+                    }));
+                    updateMismatchedPrices(priceUpdates);
+                }
+
                 setModalContent(
                     <div className="p-4">
                         <h3 className="text-lg font-bold mb-4">Price Update</h3>
                         <p>Some prices have changed since you added items to your cart:</p>
                         <ul className="list-disc pl-5 my-2">
-                            {mismatches.map((mismatch: any) => {
-                                const book = cart.find(item => item.id === mismatch.book_id);
+                            {mismatches.map((mismatch: PriceMismatchError) => {
                                 return (
-                                    <li key={mismatch.book_id}>
-                                        <span className="font-medium">{book?.book_title}</span>:
+                                    <li key={mismatch.id}>
+                                        <span className="font-medium">{mismatch.book_title}</span>:
                                         <span className="line-through mx-1">${mismatch.expected_price.toFixed(2)}</span>
                                         <span className="font-bold">${mismatch.actual_price.toFixed(2)}</span>
                                     </li>
                                 );
                             })}
                         </ul>
-                        <p>Please try placing your order again with the updated prices.</p>
+                        <p>Your cart has been updated with the latest prices. Please review the changes before placing your order.</p>
                         <div className="modal-action">
                             <button
                                 className="btn btn-primary"
                                 onClick={() => {
                                     const dialog = document.getElementById('common-modal') as HTMLDialogElement;
                                     dialog?.close();
-                                    // Refresh the page to get updated prices
-                                    window.location.reload();
                                 }}
                             >
-                                Update Prices
+                                Close
                             </button>
                         </div>
                     </div>
@@ -190,7 +197,7 @@ export default function Cart() {
         } finally {
             setIsSubmitting(false);
         }
-    }, [cart, isAuthenticated, clearCurrentCart, navigate, migrateGuestCart, countdown]);
+    }, [cart, isAuthenticated, clearCurrentCart, navigate, migrateGuestCart, updateMismatchedPrices, countdown]);
 
     return (
         <>
