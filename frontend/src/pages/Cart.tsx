@@ -193,6 +193,7 @@ export default function Cart() {
                         {/* Not found books section */}
                         {hasNotFound && (
                             <>
+                                {hasMismatches && <div className="divider my-3" />}
                                 <p className="mt-3">{t("modals.not_found.details")}</p>
                                 <p className="mt-1">{t("modals.not_found.removed_message")}</p>
                             </>
