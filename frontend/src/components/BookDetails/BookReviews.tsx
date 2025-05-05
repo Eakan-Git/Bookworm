@@ -94,7 +94,7 @@ function BookReviews({ reviews, onFilterChange, filters, book }: BookReviewsProp
             {/* Star rating summary */}
             {book?.rating?.average_rating !== undefined && (
                 <h2 className="text-3xl font-bold">
-                    {Number(book.rating.average_rating).toFixed(1)} {t("reviews.stars")}
+                    {Number(book.rating.average_rating).toFixed(2)} {t("reviews.stars")}
                 </h2>
             )}
 
