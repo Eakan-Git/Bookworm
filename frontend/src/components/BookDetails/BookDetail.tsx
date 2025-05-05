@@ -1,5 +1,9 @@
 import { Book } from "@/types/book";
+import { useTranslation } from "react-i18next";
+
 export default function BookDetail({ book }: { book: Book }) {
+    const { t } = useTranslation("bookdetails");
+
     return (
         <div className="flex flex-col md:flex-row border border-base-content/20 rounded-sm overflow-hidden">
             {/* Left side */}
@@ -17,7 +21,7 @@ export default function BookDetail({ book }: { book: Book }) {
                     />
                 </div>
                 <p className="text-sm pt-4 text-center md:text-right">
-                    By (author) <span className="font-bold">{book.author.author_name}</span>
+                    {t("book_details.by_author")} <span className="font-bold">{book.author.author_name}</span>
                 </p>
             </div>
 

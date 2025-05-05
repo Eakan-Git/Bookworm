@@ -4,10 +4,12 @@ import { useCartStore } from "@/stores/cartStore";
 import { cartConfig } from "@/configs/cartConfig";
 import { Minus, Plus } from "lucide-react";
 import PriceDisplay from "@/components/PriceDisplay/PriceDisplay";
+import { useTranslation } from "react-i18next";
 
 export default function AddToCart({ book, onAddToCart }: { book: Book, onAddToCart: (content: React.ReactNode) => void }) {
     const [quantity, setQuantity] = useState(cartConfig.minQuantity);
     const { addToCart, getBookQuantity } = useCartStore();
+    const { t } = useTranslation(["bookdetails", "common"]);
 
     const handleQuantityChange = (newQuantity: number) => {
         if (newQuantity < cartConfig.minQuantity || newQuantity > cartConfig.maxQuantity) return;
@@ -21,13 +23,13 @@ export default function AddToCart({ book, onAddToCart }: { book: Book, onAddToCa
         if (currentQuantity >= cartConfig.maxQuantity) {
             onAddToCart(
                 <>
-                    <h3 className="text-lg pb-4">Maximum Quantity Reached</h3>
-                    <p>You already have the maximum quantity ({cartConfig.maxQuantity}) of <span className="font-bold">{book.book_title}</span> in your cart.</p>
+                    <h3 className="text-lg pb-4">{t("common:modals.max_quantity")}</h3>
+                    <p>{t("common:modals.max_quantity_message", { max: cartConfig.maxQuantity, title: book.book_title })}</p>
                     <div className="modal-action">
                         <button className="btn btn-secondary" onClick={() => {
                             const dialog = document.getElementById('product-page-modal') as HTMLDialogElement;
                             dialog?.close();
-                        }}>Close</button>
+                        }}>{t("common:buttons.close")}</button>
                     </div>
                 </>
             );
@@ -46,14 +48,14 @@ export default function AddToCart({ book, onAddToCart }: { book: Book, onAddToCa
 
             onAddToCart(
                 <>
-                    <h3 className="text-lg pb-4">Maximum Quantity Reached</h3>
-                    <p>You can only add {allowedToAdd} more of <span className="font-bold">{book.book_title}</span> to your cart.</p>
-                    <p>Your cart has been updated with the maximum allowed quantity ({cartConfig.maxQuantity}).</p>
+                    <h3 className="text-lg pb-4">{t("common:modals.max_quantity")}</h3>
+                    <p>{t("common:modals.max_quantity_partial", { allowed: allowedToAdd, title: book.book_title })}</p>
+                    <p>{t("common:modals.max_quantity_updated", { max: cartConfig.maxQuantity })}</p>
                     <div className="modal-action">
                         <button className="btn btn-secondary" onClick={() => {
                             const dialog = document.getElementById('product-page-modal') as HTMLDialogElement;
                             dialog?.close();
-                        }}>Close</button>
+                        }}>{t("common:buttons.close")}</button>
                     </div>
                 </>
             );
@@ -69,14 +71,14 @@ export default function AddToCart({ book, onAddToCart }: { book: Book, onAddToCa
 
             onAddToCart(
                 <>
-                    <h3 className="text-lg pb-4">Cart Updated!</h3>
-                    <p>The quantity of <span className="font-bold">{book.book_title}</span> in your cart has been updated.</p>
-                    <p>New quantity: {currentQuantity + quantity}</p>
+                    <h3 className="text-lg pb-4">{t("common:modals.cart_updated")}</h3>
+                    <p>{t("common:modals.cart_updated_message", { title: book.book_title })}</p>
+                    <p>{t("common:modals.new_quantity", { quantity: currentQuantity + quantity })}</p>
                     <div className="modal-action">
                         <button className="btn btn-secondary" onClick={() => {
                             const dialog = document.getElementById('product-page-modal') as HTMLDialogElement;
                             dialog?.close();
-                        }}>Close</button>
+                        }}>{t("common:buttons.close")}</button>
                     </div>
                 </>
             );
@@ -91,13 +93,13 @@ export default function AddToCart({ book, onAddToCart }: { book: Book, onAddToCa
 
         onAddToCart(
             <>
-                <h3 className="text-lg pb-4">Added to Cart!</h3>
-                <p><span className="font-bold">{book.book_title}</span> has been added to your cart.</p>
+                <h3 className="text-lg pb-4">{t("common:modals.added_to_cart")}</h3>
+                <p>{t("common:modals.added_to_cart_message", { title: book.book_title })}</p>
                 <div className="modal-action">
                     <button className="btn btn-secondary" onClick={() => {
                         const dialog = document.getElementById('product-page-modal') as HTMLDialogElement;
                         dialog?.close();
-                    }}>Close</button>
+                    }}>{t("common:buttons.close")}</button>
                 </div>
             </>
         );
@@ -121,14 +123,28 @@ export default function AddToCart({ book, onAddToCart }: { book: Book, onAddToCa
                 </div>
                 <div className="flex flex-col items-center p-8">
                     <div className="flex w-full">
-                        <button className="btn rounded-none" onClick={() => handleQuantityChange(quantity - 1)}><Minus /></button>
+                        <button
+                            className="btn rounded-none"
+                            onClick={() => handleQuantityChange(quantity - 1)}
+                            title={t("common:buttons.decrease")}
+                        >
+                            <Minus />
+                        </button>
                         <div className="w-full flex items-center justify-center bg-base-200">
                             <span className="label text-base-content">{quantity}</span>
                         </div>
-                        <button className="btn rounded-none" onClick={() => handleQuantityChange(quantity + 1)}><Plus /></button>
+                        <button
+                            className="btn rounded-none"
+                            onClick={() => handleQuantityChange(quantity + 1)}
+                            title={t("common:buttons.increase")}
+                        >
+                            <Plus />
+                        </button>
                     </div>
                     <div className="w-full">
-                        <button className="btn btn-accent w-full mt-4" onClick={handleAddToCart}>Add to Cart</button>
+                        <button className="btn btn-accent w-full mt-4" onClick={handleAddToCart}>
+                            {t("common:buttons.add_to_cart")}
+                        </button>
                     </div>
                 </div>
             </div>

@@ -1,10 +1,12 @@
 import { Review } from "@/types/review";
 import { useState } from "react";
 import { useFormatDate } from "@/hooks/useFormatDate";
+import { useTranslation } from "react-i18next";
 
 export default function BookReview({ review }: { review: Review }) {
     const [isExpanded, setIsExpanded] = useState(false);
     const formattedDate = useFormatDate(review.review_date);
+    const { t } = useTranslation("bookdetails");
 
     const toggleExpand = () => {
         setIsExpanded(!isExpanded);
@@ -26,7 +28,7 @@ export default function BookReview({ review }: { review: Review }) {
                     onClick={toggleExpand}
                     className="text-sm mt-1 font-medium underline hover:cursor-pointer"
                 >
-                    Read more
+                    {t("reviews.read_more")}
                 </button>
             </div>
         );
@@ -38,11 +40,15 @@ export default function BookReview({ review }: { review: Review }) {
                 <h2 className="text-xl font-bold">{review.review_title}</h2>
                 <div className="hidden md:flex items-center gap-2">
                     <p>|</p>
-                    <p className="text-sm text-base-content/70">({review.rating_star > 1 ? `${review.rating_star} stars` : `${review.rating_star} star`})</p>
+                    <p className="text-sm text-base-content/70">
+                        ({review.rating_star} {review.rating_star > 1 ? t("reviews.stars") : t("reviews.star")})
+                    </p>
                 </div>
             </div>
             <div className="md:hidden">
-                <p className="text-sm text-base-content/70">({review.rating_star > 1 ? `${review.rating_star} stars` : `${review.rating_star} star`})</p>
+                <p className="text-sm text-base-content/70">
+                    ({review.rating_star} {review.rating_star > 1 ? t("reviews.stars") : t("reviews.star")})
+                </p>
             </div>
 
             {renderReviewDetails()}
@@ -52,11 +58,13 @@ export default function BookReview({ review }: { review: Review }) {
                     onClick={toggleExpand}
                     className="font-bold underline text-sm font-medium hover:cursor-pointer"
                 >
-                    Show less
+                    {t("reviews.read_less")}
                 </button>
             )}
 
-            <p className="text-sm text-base-content/70">{formattedDate}</p>
+            <p className="text-sm text-base-content/70">
+                {t("reviews.posted_on", { date: formattedDate })}
+            </p>
         </div>
     );
 }

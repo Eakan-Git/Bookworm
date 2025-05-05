@@ -1,9 +1,10 @@
 import { Link } from 'react-router-dom';
 import { Menu, LogOut, User } from "lucide-react";
-import { menuItems } from "@/layouts/Navbar/Menu";
+import { useMenuItems } from "@/layouts/Navbar/Menu";
 import { useLocation } from 'react-router-dom';
 import { useCartStore } from "@/stores/cartStore";
 import { useAuthStore } from "@/stores/authStore";
+import { useTranslation } from "react-i18next";
 
 const NavbarContent = () => {
     const location = useLocation();
@@ -11,6 +12,8 @@ const NavbarContent = () => {
     const { getItemQuantity } = useCartStore();
     const { isAuthenticated, user, logout } = useAuthStore();
     const itemQuantity = getItemQuantity();
+    const menuItems = useMenuItems();
+    const { t } = useTranslation("common");
 
     const handleLogout = async () => {
         await logout();
@@ -43,7 +46,7 @@ const NavbarContent = () => {
                             <li>
                                 <button onClick={handleLogout} className="flex items-center gap-2">
                                     <LogOut className="h-4 w-4" />
-                                    <span>Logout</span>
+                                    <span>{t("navbar.logout")}</span>
                                 </button>
                             </li>
                         </ul>
@@ -56,7 +59,7 @@ const NavbarContent = () => {
                     }}
                 >
                     <a className="cursor-pointer">
-                        Sign In
+                        {t("navbar.login")}
                     </a>
                 </li>
             )}
@@ -66,6 +69,8 @@ const NavbarContent = () => {
 
 const SidebarContent = () => {
     const { isAuthenticated, user, logout } = useAuthStore();
+    const menuItems = useMenuItems();
+    const { t } = useTranslation("common");
 
     const handleLogout = async () => {
         await logout();
@@ -100,7 +105,7 @@ const SidebarContent = () => {
                         className="flex items-center gap-3 px-3 py-2 text-left rounded-lg hover:bg-base-300 transition"
                     >
                         <LogOut className="h-5 w-5 text-error" />
-                        <span>Logout</span>
+                        <span>{t("navbar.logout")}</span>
                     </button>
                 </div>
             ) : (
@@ -115,7 +120,7 @@ const SidebarContent = () => {
                     className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-base-300 transition"
                 >
                     <User className="h-5 w-5" />
-                    <span>Sign In</span>
+                    <span>{t("navbar.login")}</span>
                 </button>
             )}
         </div>

@@ -2,6 +2,7 @@ import { useState, FormEvent, useRef, useEffect } from 'react';
 import { Check, XCircle } from 'lucide-react';
 import { useAuthStore } from '@/stores/authStore';
 import { useCartStore } from '@/stores/cartStore';
+import { useTranslation } from 'react-i18next';
 
 export default function LoginForm() {
     const [username, setUsername] = useState('');
@@ -11,6 +12,7 @@ export default function LoginForm() {
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
     const [sessionExpired, setSessionExpired] = useState(false);
     const modalRef = useRef<HTMLDialogElement>(null);
+    const { t } = useTranslation("common");
 
     // Clear error message when user types
     const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -36,7 +38,7 @@ export default function LoginForm() {
 
     const showSessionExpiredMessage = () => {
         setSessionExpired(true);
-        setErrorMessage('Your session has expired. Please login again.');
+        setErrorMessage(t("form.session_expired"));
     };
 
     useEffect(() => {
@@ -58,7 +60,7 @@ export default function LoginForm() {
         try {
             const success = await login(username, password);
             if (success) {
-                setSuccessMessage('Login successful! Redirecting...');
+                setSuccessMessage(t("form.login_success"));
                 setTimeout(() => {
                     modalRef.current?.close();
                     setUsername('');
@@ -66,10 +68,10 @@ export default function LoginForm() {
                     setSuccessMessage(null);
                 }, 500);
             } else {
-                setErrorMessage(error || 'Login failed. Please try again.');
+                setErrorMessage(error || t("form.login_error"));
             }
         } catch (err) {
-            setErrorMessage('An unexpected error occurred. Please try again.');
+            setErrorMessage(t("form.unexpected_error"));
             console.error('Login error:', err);
         } finally {
             setIsSubmitting(false);
@@ -99,7 +101,7 @@ export default function LoginForm() {
                     </button>
                 </form>
 
-                <h3 className="font-bold text-2xl mb-4 text-center">Sign In</h3>
+                <h3 className="font-bold text-2xl mb-4 text-center">{t("form.sign_in_title")}</h3>
 
                 {successMessage ? (
                     <div className="flex flex-col items-center justify-center py-12">
@@ -117,13 +119,13 @@ export default function LoginForm() {
 
                         {sessionExpired && !errorMessage && (
                             <div className="alert alert-warning">
-                                <span>Your session has expired. Please login again.</span>
+                                <span>{t("form.session_expired")}</span>
                             </div>
                         )}
 
                         <div className="form-control">
                             <label className="label">
-                                <span className="label-text">Email</span>
+                                <span className="label-text">{t("form.email")}</span>
                             </label>
                             <input
                                 type="email"
@@ -138,7 +140,7 @@ export default function LoginForm() {
 
                         <div className="form-control">
                             <label className="label">
-                                <span className="label-text">Password</span>
+                                <span className="label-text">{t("form.password")}</span>
                             </label>
                             <input
                                 type="password"
@@ -160,7 +162,7 @@ export default function LoginForm() {
                             {isSubmitting && (
                                 <span className="loading loading-spinner loading-sm" />
                             )}
-                            {isSubmitting ? 'Signing in...' : 'Sign In'}
+                            {isSubmitting ? t("buttons.signing_in") : t("form.sign_in")}
                         </button>
                     </form>
                 )}

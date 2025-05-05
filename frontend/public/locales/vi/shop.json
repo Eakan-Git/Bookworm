@@ -1,0 +1,52 @@
+{
+  "page_title": "Sách",
+  "filters": {
+    "category": "Thể loại",
+    "author": "Tác giả",
+    "rating": "Đánh giá",
+    "sort": "Sắp xếp theo",
+    "filtered_by": "Lọc theo {{type}}: {{value}}",
+    "no_filter": "",
+    "clear_filters": "Xóa bộ lọc",
+    "clear_all": "Xóa tất cả",
+    "all_categories": "Tất cả thể loại",
+    "all_authors": "Tất cả tác giả",
+    "any_rating": "Tất cả đánh giá",
+    "filter_by": "Lọc theo"
+  },
+  "sort_options": {
+    "on_sale": "Đang giảm giá",
+    "popularity": "Phổ biến",
+    "price_low_high": "Giá: Thấp đến Cao",
+    "price_high_low": "Giá: Cao đến Thấp",
+    "title_a_z": "Tiêu đề: A đến Z",
+    "title_z_a": "Tiêu đề: Z đến A"
+  },
+  "rating_options": {
+    "from": "Từ",
+    "stars": "sao",
+    "star": "sao",
+    "stars_value": "{{value}} {{text}}",
+    "and_up": "trở lên",
+    "reviews": "đánh giá"
+  },
+  "pagination": {
+    "showing": "Hiển thị",
+    "of": "trong",
+    "results": "kết quả",
+    "books": "sách",
+    "previous": "Trước",
+    "next": "Tiếp"
+  },
+  "display_options": {
+    "show": "Hiển thị",
+    "show_value": "Hiển thị {{value}}"
+  },
+  "no_results": "Không tìm thấy sách phù hợp với tiêu chí của bạn",
+  "no_books_found": "Không tìm thấy sách nào.",
+  "mobile": {
+    "filters": "Bộ lọc",
+    "apply": "Áp dụng",
+    "close": "Đóng"
+  }
+}

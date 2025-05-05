@@ -2,6 +2,7 @@ import { useI18nStore } from "@/stores/i18nStore";
 import { useCurrencyStore } from "@/stores/currencyStore";
 import { currencyConfig } from "@/configs/currencyConfig";
 import { Language, LANGUAGES } from "@/types/language";
+import { useTranslation } from "react-i18next";
 
 // Map of languages to their display names and flags
 const languageInfo = {
@@ -12,6 +13,7 @@ const languageInfo = {
 export default function LocaleSelector() {
     const { language, setLanguage } = useI18nStore();
     const { setCurrency } = useCurrencyStore();
+    const { t } = useTranslation("common");
 
     const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const selectedLanguage = e.target.value as Language;
@@ -28,7 +30,7 @@ export default function LocaleSelector() {
 
     return (
         <fieldset className="fieldset">
-            <legend className="fieldset-legend">Select Language & Currency</legend>
+            <legend className="fieldset-legend">{t("footer.language_selector")}</legend>
             <select
                 value={language}
                 className="select select-bordered w-full max-w-xs"

@@ -1,0 +1,96 @@
+{
+  "book_details": {
+    "author": "Author",
+    "category": "Category",
+    "summary": "Summary",
+    "price": "Price",
+    "final_price": "Final Price",
+    "discount": "Discount",
+    "rating": "Rating",
+    "reviews": "Reviews",
+    "published": "Published",
+    "by_author": "By (author)"
+  },
+  "add_to_cart": {
+    "quantity": "Quantity",
+    "add_to_cart": "Add to Cart",
+    "in_stock": "In Stock",
+    "out_of_stock": "Out of Stock",
+    "max_quantity": "Maximum quantity: {{max}}"
+  },
+  "reviews": {
+    "title": "Customer Reviews",
+    "average_rating": "Average Rating",
+    "write_review": "Write a Review",
+    "filter_by": "Filter by",
+    "sort_by": "Sort by",
+    "no_reviews": "No reviews yet. Be the first to review this book!",
+    "show_more": "Show more reviews",
+    "verified_purchase": "Verified Purchase",
+    "posted_on": "Posted on {{date}}",
+    "helpful": "Was this review helpful?",
+    "report": "Report",
+    "read_more": "Read more",
+    "read_less": "Read less",
+    "filtered_by": "(Filtered by {{rating}} {{stars}})",
+    "stars": "stars",
+    "star": "star",
+    "reviews_count": "({{count}} {{text}})",
+    "review": "review",
+    "reviews_text": "reviews",
+    "showing_reviews": "Showing {{start}}-{{end}} of {{total}} reviews",
+    "no_reviews_found": "No reviews found."
+  },
+  "review_form": {
+    "title": "Write a Review",
+    "rating_label": "Select a rating star *",
+    "title_label": "Add a title *",
+    "title_placeholder": "Summarize your review",
+    "details_label": "Details please! Your review helps other shoppers",
+    "details_placeholder": "Tell others what you think about this book",
+    "submit": "Submit Review",
+    "submitting": "Submitting...",
+    "login_required": "Please login to write a review",
+    "already_reviewed": "You have already reviewed this book",
+    "success": "Your review has been submitted successfully",
+    "error": "There was an error submitting your review. Please try again.",
+    "thank_you": "Thank you for your review!",
+    "closing_in": "Closing in {{seconds}} seconds...",
+    "close": "Close",
+    "validation": {
+      "title_required": "Review title is required",
+      "title_max_length": "Title must be less than 120 characters",
+      "rating_required": "Rating is required",
+      "rating_min": "Rating must be at least 1 star",
+      "rating_max": "Rating cannot exceed 5 stars"
+    },
+    "star_options": {
+      "1_star": "1 Star",
+      "2_stars": "2 Stars",
+      "3_stars": "3 Stars",
+      "4_stars": "4 Stars",
+      "5_stars": "5 Stars"
+    }
+  },
+  "sort_options": {
+    "newest": "Newest First",
+    "oldest": "Oldest First",
+    "highest_rating": "Highest Rating",
+    "lowest_rating": "Lowest Rating",
+    "most_helpful": "Most Helpful"
+  },
+  "rating_filter": {
+    "all": "All Ratings",
+    "5_stars": "5 Stars",
+    "4_stars": "4 Stars",
+    "3_stars": "3 Stars",
+    "2_stars": "2 Stars",
+    "1_star": "1 Star"
+  },
+  "page_status": {
+    "loading": "Loading...",
+    "error": "Error",
+    "failed_to_load_book": "Failed to load book details.",
+    "failed_to_load_reviews": "Failed to load reviews. Please try again."
+  }
+}

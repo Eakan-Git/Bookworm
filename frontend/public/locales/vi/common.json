@@ -1,0 +1,71 @@
+{
+  "navbar": {
+    "home": "Trang chủ",
+    "about": "Giới thiệu",
+    "shop": "Cửa hàng",
+    "cart": "Giỏ hàng",
+    "login": "Đăng nhập",
+    "logout": "Đăng xuất",
+    "profile": "Tài khoản"
+  },
+  "footer": {
+    "address": "Địa chỉ",
+    "phone": "Điện thoại",
+    "language_selector": "Chọn Ngôn ngữ & Tiền tệ"
+  },
+  "buttons": {
+    "view_all": "Xem tất cả",
+    "add_to_cart": "Thêm vào giỏ",
+    "submit": "Gửi",
+    "close": "Đóng",
+    "read_more": "Đọc thêm",
+    "read_less": "Thu gọn",
+    "increase": "Tăng số lượng",
+    "decrease": "Giảm số lượng",
+    "submitting": "Đang gửi...",
+    "signing_in": "Đang đăng nhập..."
+  },
+  "form": {
+    "email": "Email",
+    "password": "Mật khẩu",
+    "remember_me": "Ghi nhớ đăng nhập",
+    "forgot_password": "Quên mật khẩu?",
+    "required": "Trường này là bắt buộc",
+    "sign_in": "Đăng nhập",
+    "sign_in_title": "Đăng nhập",
+    "login_success": "Đăng nhập thành công! Đang chuyển hướng...",
+    "login_error": "Đăng nhập thất bại. Vui lòng thử lại.",
+    "unexpected_error": "Đã xảy ra lỗi không mong muốn. Vui lòng thử lại.",
+    "session_expired": "Phiên đăng nhập của bạn đã hết hạn. Vui lòng đăng nhập lại."
+  },
+  "pagination": {
+    "previous": "Trước",
+    "next": "Tiếp",
+    "page": "Trang",
+    "of": "của",
+    "showing": "Hiển thị",
+    "results": "kết quả",
+    "show": "Hiển thị"
+  },
+  "book": {
+    "by_author": "Tác giả",
+    "quantity": "Số lượng",
+    "in_stock": "Còn hàng",
+    "out_of_stock": "Hết hàng"
+  },
+  "modals": {
+    "max_quantity": "Đã đạt số lượng tối đa",
+    "max_quantity_message": "Bạn đã có số lượng tối đa ({{max}}) của {{title}} trong giỏ hàng.",
+    "max_quantity_partial": "Bạn chỉ có thể thêm {{allowed}} {{title}} nữa vào giỏ hàng.",
+    "max_quantity_updated": "Giỏ hàng của bạn đã được cập nhật với số lượng tối đa cho phép ({{max}}).",
+    "cart_updated": "Giỏ hàng đã cập nhật!",
+    "cart_updated_message": "Số lượng {{title}} trong giỏ hàng của bạn đã được cập nhật.",
+    "new_quantity": "Số lượng mới: {{quantity}}",
+    "added_to_cart": "Đã thêm vào giỏ hàng!",
+    "added_to_cart_message": "{{title}} đã được thêm vào giỏ hàng của bạn."
+  },
+  "select": {
+    "sort_newest": "Sắp xếp theo ngày: Mới nhất đến cũ nhất",
+    "sort_oldest": "Sắp xếp theo ngày: Cũ nhất đến mới nhất"
+  }
+}

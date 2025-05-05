@@ -1,6 +1,8 @@
 import { PaginationData } from "@/types/paginate";
+import { useTranslation } from "react-i18next";
 
 export default function Pagination({ data, onChange }: { data: PaginationData, onChange: (page: number) => void }) {
+    const { t } = useTranslation("shop");
     // Generate array of page numbers to display
     const generatePagination = () => {
         const pages = [];
@@ -67,7 +69,7 @@ export default function Pagination({ data, onChange }: { data: PaginationData, o
                 onClick={() => data.current_page > 1 && onChange(data.current_page - 1)}
                 disabled={data.current_page === 1}
             >
-                Previous
+                {t("pagination.previous")}
             </button>
 
             {/* Page numbers */}
@@ -93,7 +95,7 @@ export default function Pagination({ data, onChange }: { data: PaginationData, o
                 onClick={() => data.current_page < data.total_pages && onChange(data.current_page + 1)}
                 disabled={data.current_page === data.total_pages}
             >
-                Next
+                {t("pagination.next")}
             </button>
         </div>
     );

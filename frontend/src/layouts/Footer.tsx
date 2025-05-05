@@ -1,7 +1,10 @@
 
 import LocaleSelector from "@/components/LocaleSelector/LocaleSelector";
+import { useTranslation } from "react-i18next";
 
 export default function Footer() {
+    const { t } = useTranslation("common");
+
     return (
         <footer className="footer sm:footer-horizontal bg-base-300 items-center p-4">
             <div className="flex items-center">
@@ -10,8 +13,8 @@ export default function Footer() {
                 </div>
                 <div className="flex flex-col">
                     <span className="font-bold">BOOKWORM</span>
-                    <span>Address</span>
-                    <span>Phone</span>
+                    <span>{t("footer.address")}</span>
+                    <span>{t("footer.phone")}</span>
                 </div>
             </div>
             <LocaleSelector />

@@ -10,6 +10,7 @@ import { orderService } from "@/api/orderService";
 import { PlacedOrderItem } from "@/types/order";
 import { Book } from "@/types/book";
 import { showLoginModal } from "@/utils/authUtils";
+import { useTranslation } from "react-i18next";
 
 export default function Cart() {
     const navigate = useNavigate();
@@ -18,6 +19,7 @@ export default function Cart() {
     const [modalContent, setModalContent] = useState<React.ReactNode>(null);
     const [countdown, setCountdown] = useState<number | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const { t } = useTranslation("cart");
 
     // Get the current cart items
     const cart = getCurrentCart();
@@ -37,9 +39,9 @@ export default function Cart() {
         if (countdown > 0) {
             setModalContent(
                 <div className="p-4">
-                    <h3 className="text-lg font-bold mb-4">Order Placed Successfully!</h3>
-                    <p>Thank you for your order. Your books will be delivered soon.</p>
-                    <p className="mt-2">Redirecting to home page in <span className="font-bold">{countdown}</span> seconds...</p>
+                    <h3 className="text-lg font-bold mb-4">{t("modals.order_success.title")}</h3>
+                    <p>{t("modals.order_success.message")}</p>
+                    <p className="mt-2">{t("modals.order_success.redirect", { seconds: countdown })}</p>
                     <div className="modal-action">
                         <button
                             className="btn btn-primary"
@@ -50,7 +52,7 @@ export default function Cart() {
                                 dialog?.close();
                             }}
                         >
-                            Go to Home
+                            {t("modals.order_success.go_home")}
                         </button>
                     </div>
                 </div>
@@ -82,8 +84,8 @@ export default function Cart() {
         if (cart.length === 0) {
             setModalContent(
                 <div className="p-4">
-                    <h3 className="text-lg font-bold mb-4">Empty Cart</h3>
-                    <p>Your cart is empty. Please add some items before placing an order.</p>
+                    <h3 className="text-lg font-bold mb-4">{t("modals.empty_cart.title")}</h3>
+                    <p>{t("modals.empty_cart.message")}</p>
                     <div className="modal-action">
                         <button
                             className="btn btn-primary"
@@ -92,7 +94,7 @@ export default function Cart() {
                                 dialog?.close();
                             }}
                         >
-                            Close
+                            {t("modals.empty_cart.close")}
                         </button>
                     </div>
                 </div>
@@ -150,8 +152,8 @@ export default function Cart() {
 
                 setModalContent(
                     <div className="p-4">
-                        <h3 className="text-lg font-bold mb-4">Price Update</h3>
-                        <p>Some prices have changed since you added items to your cart:</p>
+                        <h3 className="text-lg font-bold mb-4">{t("modals.price_mismatch.title")}</h3>
+                        <p>{t("modals.price_mismatch.details")}</p>
                         <ul className="list-disc pl-5 my-2">
                             {mismatches.map((book: Book) => {
                                 // Find the current price in the cart
@@ -171,7 +173,7 @@ export default function Cart() {
                                 );
                             })}
                         </ul>
-                        <p>Your cart has been updated with the latest prices. Please review the changes before placing your order.</p>
+                        <p>{t("modals.price_mismatch.updated_message")}</p>
                         <div className="modal-action">
                             <button
                                 className="btn btn-primary"
@@ -180,7 +182,7 @@ export default function Cart() {
                                     dialog?.close();
                                 }}
                             >
-                                Close
+                                {t("modals.price_mismatch.close")}
                             </button>
                         </div>
                     </div>
@@ -189,8 +191,8 @@ export default function Cart() {
                 // Generic error
                 setModalContent(
                     <div className="p-4">
-                        <h3 className="text-lg font-bold mb-4">Order Failed</h3>
-                        <p>There was an error processing your order. Please try again.</p>
+                        <h3 className="text-lg font-bold mb-4">{t("modals.order_failed.title")}</h3>
+                        <p>{t("modals.order_failed.message")}</p>
                         <p className="text-error">{error.response?.data?.detail?.message || error.message}</p>
                         <div className="modal-action">
                             <button
@@ -200,7 +202,7 @@ export default function Cart() {
                                     dialog?.close();
                                 }}
                             >
-                                Close
+                                {t("modals.order_failed.close")}
                             </button>
                         </div>
                     </div>
@@ -216,7 +218,7 @@ export default function Cart() {
 
     return (
         <>
-            <PageLayout pageTitle={`Your cart: ${getItemQuantity()} items`}>
+            <PageLayout pageTitle={t("your_cart_items", { count: getItemQuantity() })}>
                 <div className="flex flex-col md:flex-row gap-4">
                     <div className="w-full md:w-3/5">
                         <CartItemList />
