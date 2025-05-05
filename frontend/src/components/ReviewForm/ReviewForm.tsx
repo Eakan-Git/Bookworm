@@ -45,7 +45,9 @@ export default function ReviewForm({ onSubmit }: ReviewFormProps) {
             </div>
             <div className="flex flex-col gap-4 px-8 py-4">
                 <div className="flex flex-col">
-                    <label className="label text-sm text-base-content font-bold">{t("bookdetails:review_form.title_label")}</label>
+                    <div className="label p-0 pb-2">
+                        <span className="text-sm text-base-content font-bold whitespace-normal break-words w-full">{t("bookdetails:review_form.title_label")}</span>
+                    </div>
                     <input
                         type="text"
                         className={`input w-full ${errors.review_title ? 'input-error' : ''}`}
@@ -62,9 +64,11 @@ export default function ReviewForm({ onSubmit }: ReviewFormProps) {
                     )}
                 </div>
                 <div className="flex flex-col">
-                    <label className="label text-sm text-base-content font-bold">
-                        {t("bookdetails:review_form.details_label")}
-                    </label>
+                    <div className="label p-0 pb-2">
+                        <span className="text-sm text-base-content font-bold whitespace-normal break-words w-full">
+                            {t("bookdetails:review_form.details_label")}
+                        </span>
+                    </div>
                     <textarea
                         className={`textarea w-full ${errors.review_details ? 'textarea-error' : ''}`}
                         {...register("review_details")}
@@ -75,7 +79,9 @@ export default function ReviewForm({ onSubmit }: ReviewFormProps) {
                     )}
                 </div>
                 <div className="flex flex-col">
-                    <label className="label text-sm text-base-content font-bold">{t("bookdetails:review_form.rating_label")}</label>
+                    <div className="label p-0 pb-2">
+                        <span className="text-sm text-base-content font-bold whitespace-normal break-words w-full">{t("bookdetails:review_form.rating_label")}</span>
+                    </div>
                     <select
                         className={`select w-full ${errors.rating_star ? 'select-error' : ''}`}
                         {...register("rating_star", {
