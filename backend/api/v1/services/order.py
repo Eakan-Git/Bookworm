@@ -8,7 +8,7 @@ from api.v1.schemas.order import (
     OrderRead,
     OrderClientInput,
     OrderItemCreate,
-    PriceMismatchError
+    OrderError
 )
 from api.v1.schemas.book import BookReadSimple
 from models.order import Order
@@ -35,20 +35,22 @@ class OrderService:
             Created order
 
         Raises:
-            HTTPException: If there's a price mismatch or book not found
+            HTTPException:
+                - 400 Bad Request with OrderError containing:
+                  - mismatches: List of books with price mismatches
+                  - not_found: List of book IDs that were not found
         """
         validated_items: List[OrderItemCreate] = []
         mismatched_books: List[BookReadSimple] = []
+        not_found_books: List[int] = []
         total_amount = Decimal('0.00')
 
         for item in client_order_data.order_items:
             # Get book from database
             book = BookService.get_book_by_id(item.book_id, db)
             if not book:
-                raise HTTPException(
-                    status_code=status.HTTP_404_NOT_FOUND,
-                    detail=f"Book not found with id {item.book_id}"
-                )
+                not_found_books.append(item.book_id)
+                continue
 
             # Calculate actual price
             actual_price = book.book_price
@@ -72,10 +74,11 @@ class OrderService:
                 validated_items.append(validated_item)
                 total_amount += Decimal(str(actual_price_float)) * item.quantity
 
-        # Return mismatch error if needed
-        if mismatched_books:
-            error_response = PriceMismatchError(
-                mismatches=mismatched_books
+        # Return error if there are price mismatches or not found books
+        if mismatched_books or not_found_books:
+            error_response = OrderError(
+                mismatches=mismatched_books,
+                not_found=not_found_books
             )
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,

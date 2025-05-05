@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, status, HTTPException
 from sqlalchemy.orm import Session
-from api.v1.schemas.order import OrderRead, OrderClientInput
+from api.v1.schemas.order import OrderRead, OrderClientInput, OrderError
 from api.v1.controllers.order import OrderController
 from api.v1.dependencies.dependencies import get_db_session
 from api.v1.middlewares.auth_middleware import get_current_user
@@ -9,7 +9,17 @@ from models.user import User
 router = APIRouter(prefix="/orders")
 
 
-@router.post("", response_model=OrderRead, status_code=status.HTTP_201_CREATED)
+@router.post(
+    "",
+    response_model=OrderRead,
+    status_code=status.HTTP_201_CREATED,
+    responses={
+        status.HTTP_400_BAD_REQUEST: {
+            "model": OrderError,
+            "description": "Price mismatch or book not found"
+        }
+    }
+)
 def create_order(
     order_data: OrderClientInput,
     db: Session = Depends(get_db_session),
@@ -34,8 +44,9 @@ def create_order(
 
     Raises:
         HTTPException:
-            - 400 Bad Request if there's a price mismatch
-            - 404 Not Found if a book doesn't exist
+            - 400 Bad Request with OrderError containing:
+              - mismatches: List of books with price mismatches
+              - not_found: List of book IDs that were not found
     """
     # Validate order has items
     if not order_data.order_items or len(order_data.order_items) == 0:
