@@ -49,7 +49,7 @@ def on_startup():
         if os.getenv("SEED_ON_STARTUP", "false").lower() == "true":
             seed_data(
                 num_users=100,
-                num_authors=5,
+                num_authors=10,
                 num_categories=5,
                 num_books=2000,
                 num_orders=8000,
