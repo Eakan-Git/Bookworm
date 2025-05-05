@@ -53,7 +53,7 @@
       "close": "Close"
     },
     "not_found": {
-      "details": "Some books in your cart are no longer available:",
+      "details": "Some books in your cart are no longer available.",
       "removed_message": "These items have been removed from your cart.",
       "close": "Close"
     },
