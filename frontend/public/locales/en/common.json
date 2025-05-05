@@ -1,0 +1,71 @@
+{
+  "navbar": {
+    "home": "Home",
+    "about": "About",
+    "shop": "Shop",
+    "cart": "Cart",
+    "login": "Login",
+    "logout": "Logout",
+    "profile": "Profile"
+  },
+  "footer": {
+    "address": "Address",
+    "phone": "Phone",
+    "language_selector": "Select Language & Currency"
+  },
+  "buttons": {
+    "view_all": "View All",
+    "add_to_cart": "Add to Cart",
+    "submit": "Submit",
+    "close": "Close",
+    "read_more": "Read More",
+    "read_less": "Read Less",
+    "increase": "Increase quantity",
+    "decrease": "Decrease quantity",
+    "submitting": "Submitting...",
+    "signing_in": "Signing in..."
+  },
+  "form": {
+    "email": "Email",
+    "password": "Password",
+    "remember_me": "Remember me",
+    "forgot_password": "Forgot password?",
+    "required": "This field is required",
+    "sign_in": "Sign In",
+    "sign_in_title": "Sign In",
+    "login_success": "Login successful! Redirecting...",
+    "login_error": "Login failed. Please try again.",
+    "unexpected_error": "An unexpected error occurred. Please try again.",
+    "session_expired": "Your session has expired. Please login again."
+  },
+  "pagination": {
+    "previous": "Previous",
+    "next": "Next",
+    "page": "Page",
+    "of": "of",
+    "showing": "Showing",
+    "results": "results",
+    "show": "Show"
+  },
+  "book": {
+    "by_author": "By (author)",
+    "quantity": "Quantity",
+    "in_stock": "In Stock",
+    "out_of_stock": "Out of Stock"
+  },
+  "modals": {
+    "max_quantity": "Maximum Quantity Reached",
+    "max_quantity_message": "You already have the maximum quantity ({{max}}) of {{title}} in your cart.",
+    "max_quantity_partial": "You can only add {{allowed}} more of {{title}} to your cart.",
+    "max_quantity_updated": "Your cart has been updated with the maximum allowed quantity ({{max}}).",
+    "cart_updated": "Cart Updated!",
+    "cart_updated_message": "The quantity of {{title}} in your cart has been updated.",
+    "new_quantity": "New quantity: {{quantity}}",
+    "added_to_cart": "Added to Cart!",
+    "added_to_cart_message": "{{title}} has been added to your cart."
+  },
+  "select": {
+    "sort_newest": "Sort by date: Newest to oldest",
+    "sort_oldest": "Sort by date: Oldest to newest"
+  }
+}

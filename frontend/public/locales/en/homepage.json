@@ -1,0 +1,15 @@
+{
+  "sections": {
+    "on_sale": "On Sale",
+    "featured_books": "Featured Books",
+    "recommended": "Recommended",
+    "popular": "Popular"
+  },
+  "buttons": {
+    "view_all": "View All"
+  },
+  "hero": {
+    "title": "Discover Your Next Favorite Book",
+    "subtitle": "Browse our collection of bestsellers, new releases, and classics"
+  }
+}

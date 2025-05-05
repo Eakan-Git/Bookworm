@@ -1,0 +1,72 @@
+{
+  "page_title": "Giỏ hàng",
+  "your_cart_items": "Giỏ hàng của bạn: {{count}} sản phẩm",
+  "empty_cart": {
+    "title": "Giỏ hàng của bạn đang trống",
+    "message": "Có vẻ như bạn chưa thêm sách nào vào giỏ hàng.",
+    "cta": "Tiếp tục mua sắm"
+  },
+  "cart_items": {
+    "header": "Sản phẩm trong giỏ hàng",
+    "product": "Sản phẩm",
+    "price": "Giá",
+    "quantity": "Số lượng",
+    "total": "Tổng",
+    "remove": "Xóa",
+    "empty_message": "Giỏ hàng của bạn đang trống!",
+    "browse_books": "Xem sách"
+  },
+  "cart_summary": {
+    "title": "Tổng giỏ hàng",
+    "subtotal": "Tạm tính",
+    "shipping": "Phí vận chuyển",
+    "tax": "Thuế",
+    "total": "Tổng cộng",
+    "checkout": "Tiến hành thanh toán",
+    "place_order": "Đặt hàng",
+    "processing": "Đang xử lý...",
+    "login_required": "Vui lòng đăng nhập để thanh toán"
+  },
+  "quantity": {
+    "increase": "Tăng số lượng",
+    "decrease": "Giảm số lượng",
+    "max_limit": "Đã đạt số lượng tối đa"
+  },
+  "modals": {
+    "added": {
+      "title": "Đã thêm vào giỏ hàng",
+      "message": "{{title}} đã được thêm vào giỏ hàng của bạn."
+    },
+    "increased": {
+      "title": "Đã cập nhật số lượng",
+      "message": "Số lượng cho {{title}} đã được tăng lên."
+    },
+    "max_reached": {
+      "title": "Đã đạt số lượng tối đa",
+      "message": "Bạn không thể thêm quá 8 cuốn {{title}} vào giỏ hàng."
+    },
+    "price_mismatch": {
+      "title": "Cập nhật giá",
+      "message": "Một số giá đã thay đổi kể từ khi bạn thêm sản phẩm vào giỏ hàng. Giá đã được cập nhật.",
+      "details": "Một số giá đã thay đổi kể từ khi bạn thêm sản phẩm vào giỏ hàng:",
+      "updated_message": "Giỏ hàng của bạn đã được cập nhật với giá mới nhất. Vui lòng xem lại các thay đổi trước khi đặt hàng.",
+      "close": "Đóng"
+    },
+    "order_success": {
+      "title": "Đặt hàng thành công!",
+      "message": "Cảm ơn bạn đã đặt hàng. Sách của bạn sẽ sớm được giao.",
+      "redirect": "Chuyển hướng về trang chủ trong {{seconds}} giây...",
+      "go_home": "Về trang chủ"
+    },
+    "order_failed": {
+      "title": "Đặt hàng thất bại",
+      "message": "Đã xảy ra lỗi khi xử lý đơn hàng của bạn. Vui lòng thử lại.",
+      "close": "Đóng"
+    },
+    "empty_cart": {
+      "title": "Giỏ hàng trống",
+      "message": "Giỏ hàng của bạn đang trống. Vui lòng thêm sản phẩm trước khi đặt hàng.",
+      "close": "Đóng"
+    }
+  }
+}

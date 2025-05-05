@@ -1,0 +1,15 @@
+{
+  "sections": {
+    "on_sale": "Đang giảm giá",
+    "featured_books": "Sách nổi bật",
+    "recommended": "Đề xuất",
+    "popular": "Phổ biến"
+  },
+  "buttons": {
+    "view_all": "Xem tất cả"
+  },
+  "hero": {
+    "title": "Khám phá cuốn sách yêu thích tiếp theo của bạn",
+    "subtitle": "Duyệt qua bộ sưu tập sách bán chạy, sách mới phát hành và sách kinh điển của chúng tôi"
+  }
+}

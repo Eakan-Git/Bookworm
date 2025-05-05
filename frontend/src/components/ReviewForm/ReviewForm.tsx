@@ -1,6 +1,7 @@
 import { useForm } from "react-hook-form";
 import { ReviewFormValues } from "@/types/review";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 interface ReviewFormProps {
     bookId: number;
@@ -9,6 +10,7 @@ interface ReviewFormProps {
 
 export default function ReviewForm({ onSubmit }: ReviewFormProps) {
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const { t } = useTranslation(["bookdetails", "common"]);
 
     const {
         register,
@@ -39,19 +41,19 @@ export default function ReviewForm({ onSubmit }: ReviewFormProps) {
     return (
         <form onSubmit={handleSubmit(onSubmitForm)} className="flex flex-col gap-4 border border-base-content/20 rounded-sm">
             <div className="px-8 py-4 bg-base-200 border-b border-base-content/20">
-                <h1 className="font-bold text-xl">Write a Review</h1>
+                <h1 className="font-bold text-xl">{t("bookdetails:review_form.title")}</h1>
             </div>
             <div className="flex flex-col gap-4 px-8 py-4">
                 <div className="flex flex-col">
-                    <label className="label text-sm text-base-content font-bold">Add a title *</label>
+                    <label className="label text-sm text-base-content font-bold">{t("bookdetails:review_form.title_label")}</label>
                     <input
                         type="text"
                         className={`input w-full ${errors.review_title ? 'input-error' : ''}`}
                         {...register("review_title", {
-                            required: "Review title is required",
+                            required: t("bookdetails:review_form.validation.title_required"),
                             maxLength: {
                                 value: 120,
-                                message: "Title must be less than 120 characters"
+                                message: t("bookdetails:review_form.validation.title_max_length")
                             }
                         })}
                     />
@@ -61,7 +63,7 @@ export default function ReviewForm({ onSubmit }: ReviewFormProps) {
                 </div>
                 <div className="flex flex-col">
                     <label className="label text-sm text-base-content font-bold">
-                        Details please! Your review helps other shoppers
+                        {t("bookdetails:review_form.details_label")}
                     </label>
                     <textarea
                         className={`textarea w-full ${errors.review_details ? 'textarea-error' : ''}`}
@@ -73,26 +75,26 @@ export default function ReviewForm({ onSubmit }: ReviewFormProps) {
                     )}
                 </div>
                 <div className="flex flex-col">
-                    <label className="label text-sm text-base-content font-bold">Select a rating star *</label>
+                    <label className="label text-sm text-base-content font-bold">{t("bookdetails:review_form.rating_label")}</label>
                     <select
                         className={`select w-full ${errors.rating_star ? 'select-error' : ''}`}
                         {...register("rating_star", {
-                            required: "Rating is required",
+                            required: t("bookdetails:review_form.validation.rating_required"),
                             min: {
                                 value: 1,
-                                message: "Rating must be at least 1 star"
+                                message: t("bookdetails:review_form.validation.rating_min")
                             },
                             max: {
                                 value: 5,
-                                message: "Rating cannot exceed 5 stars"
+                                message: t("bookdetails:review_form.validation.rating_max")
                             }
                         })}
                     >
-                        <option value={1}>1 Star</option>
-                        <option value={2}>2 Stars</option>
-                        <option value={3}>3 Stars</option>
-                        <option value={4}>4 Stars</option>
-                        <option value={5}>5 Stars</option>
+                        <option value={1}>{t("bookdetails:review_form.star_options.1_star")}</option>
+                        <option value={2}>{t("bookdetails:review_form.star_options.2_stars")}</option>
+                        <option value={3}>{t("bookdetails:review_form.star_options.3_stars")}</option>
+                        <option value={4}>{t("bookdetails:review_form.star_options.4_stars")}</option>
+                        <option value={5}>{t("bookdetails:review_form.star_options.5_stars")}</option>
                     </select>
                     {errors.rating_star && (
                         <p className="text-error text-sm mt-1">{errors.rating_star.message}</p>
@@ -108,10 +110,10 @@ export default function ReviewForm({ onSubmit }: ReviewFormProps) {
                     {isSubmitting ? (
                         <>
                             <span className="loading loading-spinner loading-sm"></span>
-                            Submitting...
+                            {t("bookdetails:review_form.submitting")}
                         </>
                     ) : (
-                        'Submit Review'
+                        t("bookdetails:review_form.submit")
                     )}
                 </button>
             </div>

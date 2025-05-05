@@ -1,43 +1,37 @@
 import PageLayout from "@/layouts/PageLayout";
+import { useTranslation } from "react-i18next";
 
 export default function About() {
+    const { t } = useTranslation("about");
+
     return (
-        <PageLayout pageTitle="About Us">
+        <PageLayout pageTitle={t("page_title")}>
             <div className="flex flex-col items-center md:w-8/12 mx-auto text-lg">
 
-                <h2 className="text-3xl font-bold my-4 pb-4 text-center">Welcome to Bookworm</h2>
+                <h2 className="text-3xl font-bold my-4 pb-4 text-center">{t("welcome_title")}</h2>
                 <p className="py-4">
-                    "Bookworm is an independent New York bookstore and language school with locations
-                    in Manhattan and Brooklyn.
-                    We specialize in travel books and language classes."
+                    "{t("welcome_text")}"
                 </p>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <h2 className="text-3xl font-bold my-4 text-center md:text-left">Our story</h2>
+                        <h2 className="text-3xl font-bold my-4 text-center md:text-left">{t("story.title")}</h2>
                         <p className="py-4">
-                            The name Bookworm was taken from the original name for New York
-                            International Airport, which was renamed JFK in December 1963.
+                            {t("story.paragraph1")}
                         </p>
                         <p className="py-4">
-                            Our Manhattan store has just moved to the West Village. Our new location is 170
-                            7th Avenue South, at the corner of Perry Street.
+                            {t("story.paragraph2")}
                         </p>
                         <p className="py-4">
-                            From March 2008 through May 2016, the store was located in Flatiron District.
+                            {t("story.paragraph3")}
                         </p>
                     </div>
                     <div>
-                        <h2 className="text-3xl font-bold my-4 text-center md:text-left">Our Vision</h2>
+                        <h2 className="text-3xl font-bold my-4 text-center md:text-left">{t("vision.title")}</h2>
                         <p className="py-4">
-                            One of the last travel bookstores in the country,
-                            our Manhattan store carries a range of guidebooks (all 10% off)
-                            to suit the needs and tastes of every traveler and budget.
+                            {t("vision.paragraph1")}
                         </p>
                         <p className="py-4">
-                            We believe that a novel or travelogue can be just as
-                            valuable a key to a place as any guidebook, and our well-read,
-                            well-traveled staff is happy to make reading recommendations
-                            for any traveler, book lover, or gift giver.
+                            {t("vision.paragraph2")}
                         </p>
                     </div>
                 </div>

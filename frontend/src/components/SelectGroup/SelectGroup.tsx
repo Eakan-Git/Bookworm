@@ -1,4 +1,5 @@
 import { memo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface Option {
     name: string;
@@ -22,6 +23,7 @@ function SelectGroup({
     defaultOpen = true,
     selectedValue
 }: SelectGroupProps) {
+    const { t } = useTranslation("shop");
     const groupId = `select-group-${header.toLowerCase().replace(/\s+/g, '-')}`;
 
     return (

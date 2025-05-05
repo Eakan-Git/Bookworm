@@ -5,6 +5,7 @@ import { useCallback, memo } from "react";
 import { Book } from "@/types/book";
 import ResponsivePagination from "./ResponsivePagination";
 import "./BookReviews.css";
+import { useTranslation } from "react-i18next";
 
 interface BookReviewsProps {
     book_review_count?: number;
@@ -15,6 +16,8 @@ interface BookReviewsProps {
 }
 
 function BookReviews({ reviews, onFilterChange, filters, book }: BookReviewsProps) {
+    const { t } = useTranslation("bookdetails");
+
     // Calculate display information
     const bookReviewCount = book?.rating?.review_count || 0;
     const totalReviews = reviews.meta.total || 0;
@@ -77,10 +80,13 @@ function BookReviews({ reviews, onFilterChange, filters, book }: BookReviewsProp
     return (
         <div className="flex flex-col gap-4 border border-base-content/20 rounded-sm p-8">
             <div className="flex items-center gap-2">
-                <h2 className="font-bold text-2xl">Customer Reviews</h2>
+                <h2 className="font-bold text-2xl">{t("reviews.title")}</h2>
                 {filters.rating_star && (
                     <p className="text-sm text-base-content/70">
-                        (Filtered by {filters.rating_star} {filters.rating_star === 1 ? 'star' : 'stars'})
+                        {t("reviews.filtered_by", {
+                            rating: filters.rating_star,
+                            stars: filters.rating_star === 1 ? t("reviews.star") : t("reviews.stars")
+                        })}
                     </p>
                 )}
             </div>
@@ -88,7 +94,7 @@ function BookReviews({ reviews, onFilterChange, filters, book }: BookReviewsProp
             {/* Star rating summary */}
             {book?.rating?.average_rating !== undefined && (
                 <h2 className="text-3xl font-bold">
-                    {Number(book.rating.average_rating).toFixed(1)} Stars
+                    {Number(book.rating.average_rating).toFixed(1)} {t("reviews.stars")}
                 </h2>
             )}
 
@@ -98,7 +104,10 @@ function BookReviews({ reviews, onFilterChange, filters, book }: BookReviewsProp
                         }`}
                     onClick={() => handleStarFilterChange(undefined)}
                 >
-                    ({bookReviewCount} {bookReviewCount === 1 ? 'review' : 'reviews'})
+                    {t("reviews.reviews_count", {
+                        count: bookReviewCount,
+                        text: bookReviewCount === 1 ? t("reviews.review") : t("reviews.reviews_text")
+                    })}
                 </p>
                 <div className="flex flex-wrap gap-4">
                     {[5, 4, 3, 2, 1].map(star => (
@@ -108,7 +117,7 @@ function BookReviews({ reviews, onFilterChange, filters, book }: BookReviewsProp
                                 }`}
                             onClick={() => handleStarFilterChange(filters.rating_star === star ? undefined : star)}
                         >
-                            {star} {star === 1 ? 'star' : 'stars'}
+                            {star} {star === 1 ? t("reviews.star") : t("reviews.stars")}
                         </span>
                     ))}
                 </div>
@@ -118,8 +127,8 @@ function BookReviews({ reviews, onFilterChange, filters, book }: BookReviewsProp
             <div className="flex flex-col md:flex-row justify-between items-center gap-2">
                 <p className="text-sm">
                     {totalReviews > 0
-                        ? `Showing ${startItem}-${endItem} of ${totalReviews} reviews`
-                        : 'No reviews found'}
+                        ? t("reviews.showing_reviews", { start: startItem, end: endItem, total: totalReviews })
+                        : t("reviews.no_reviews_found")}
                 </p>
                 <div className="flex gap-2">
                     <select
@@ -127,17 +136,17 @@ function BookReviews({ reviews, onFilterChange, filters, book }: BookReviewsProp
                         value={getCurrentSortValue()}
                         onChange={handleSortChange}
                     >
-                        <option value="newest">Sort by date: Newest to oldest</option>
-                        <option value="oldest">Sort by date: Oldest to newest</option>
+                        <option value="newest">{t("common:select.sort_newest")}</option>
+                        <option value="oldest">{t("common:select.sort_oldest")}</option>
                     </select>
                     <select
                         className="select select-bordered select-sm w-auto"
                         value={size.toString()}
                         onChange={handleSizeChange}
                     >
-                        <option value="10">Show 10</option>
-                        <option value="20">Show 20</option>
-                        <option value="50">Show 50</option>
+                        <option value="10">{t("common:pagination.show")} 10</option>
+                        <option value="20">{t("common:pagination.show")} 20</option>
+                        <option value="50">{t("common:pagination.show")} 50</option>
                     </select>
                 </div>
             </div>
@@ -154,7 +163,7 @@ function BookReviews({ reviews, onFilterChange, filters, book }: BookReviewsProp
                 </div>
             ) : (
                 <div className="flex justify-center items-center py-8">
-                    <p className="text-base-content/70">No reviews found.</p>
+                    <p className="text-base-content/70">{t("reviews.no_reviews_found")}</p>
                 </div>
             )}
 

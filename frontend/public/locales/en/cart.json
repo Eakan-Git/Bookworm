@@ -1,0 +1,72 @@
+{
+  "page_title": "Shopping Cart",
+  "your_cart_items": "Your cart: {{count}} items",
+  "empty_cart": {
+    "title": "Your cart is empty",
+    "message": "Looks like you haven't added any books to your cart yet.",
+    "cta": "Continue Shopping"
+  },
+  "cart_items": {
+    "header": "Your Cart Items",
+    "product": "Product",
+    "price": "Price",
+    "quantity": "Quantity",
+    "total": "Total",
+    "remove": "Remove",
+    "empty_message": "Looks like your cart is empty!",
+    "browse_books": "Browse Books"
+  },
+  "cart_summary": {
+    "title": "Cart Totals",
+    "subtotal": "Subtotal",
+    "shipping": "Shipping",
+    "tax": "Tax",
+    "total": "Total",
+    "checkout": "Proceed to Checkout",
+    "place_order": "Place Order",
+    "processing": "Processing...",
+    "login_required": "Please login to checkout"
+  },
+  "quantity": {
+    "increase": "Increase quantity",
+    "decrease": "Decrease quantity",
+    "max_limit": "Maximum quantity reached"
+  },
+  "modals": {
+    "added": {
+      "title": "Added to Cart",
+      "message": "{{title}} has been added to your cart."
+    },
+    "increased": {
+      "title": "Quantity Updated",
+      "message": "Quantity for {{title}} has been increased."
+    },
+    "max_reached": {
+      "title": "Maximum Quantity Reached",
+      "message": "You cannot add more than 8 copies of {{title}} to your cart."
+    },
+    "price_mismatch": {
+      "title": "Price Update",
+      "message": "Some prices have changed since you added items to your cart. The updated prices are now shown.",
+      "details": "Some prices have changed since you added items to your cart:",
+      "updated_message": "Your cart has been updated with the latest prices. Please review the changes before placing your order.",
+      "close": "Close"
+    },
+    "order_success": {
+      "title": "Order Placed Successfully!",
+      "message": "Thank you for your order. Your books will be delivered soon.",
+      "redirect": "Redirecting to home page in {{seconds}} seconds...",
+      "go_home": "Go to Home"
+    },
+    "order_failed": {
+      "title": "Order Failed",
+      "message": "There was an error processing your order. Please try again.",
+      "close": "Close"
+    },
+    "empty_cart": {
+      "title": "Empty Cart",
+      "message": "Your cart is empty. Please add some items before placing an order.",
+      "close": "Close"
+    }
+  }
+}

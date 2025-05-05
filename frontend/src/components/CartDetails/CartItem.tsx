@@ -3,6 +3,7 @@ import PriceDisplay from "@/components/PriceDisplay/PriceDisplay";
 import { Minus, Plus } from "lucide-react";
 import { memo } from "react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 interface CartItemProps {
     item: CartItem;
@@ -13,6 +14,7 @@ interface CartItemProps {
 function CartItemComponent({ item, onIncreaseQuantity, onDecreaseQuantity }: CartItemProps) {
     const unitPrice = item.discount?.discount_price || item.book_price;
     const totalPrice = unitPrice * item.quantity;
+    const { t } = useTranslation("cart");
 
     const MobileContent = () => (
         <div className="flex flex-col p-4 border-b border-base-content/10 lg:hidden">
@@ -38,7 +40,7 @@ function CartItemComponent({ item, onIncreaseQuantity, onDecreaseQuantity }: Car
             </div>
 
             <div className="flex justify-between items-center mb-3">
-                <span className="text-sm font-medium">Price:</span>
+                <span className="text-sm font-medium">{t("cart_items.price")}:</span>
                 <div className="text-right">
                     {item.discount?.discount_price ? (
                         <>
@@ -52,18 +54,30 @@ function CartItemComponent({ item, onIncreaseQuantity, onDecreaseQuantity }: Car
             </div>
 
             <div className="flex justify-between items-center mb-3">
-                <span className="text-sm font-medium">Quantity:</span>
+                <span className="text-sm font-medium">{t("cart_items.quantity")}:</span>
                 <div className="flex">
-                    <button className="btn btn-sm rounded-none" onClick={() => onDecreaseQuantity(item.id)}><Minus size={16} /></button>
+                    <button
+                        className="btn btn-sm rounded-none"
+                        onClick={() => onDecreaseQuantity(item.id)}
+                        title={t("quantity.decrease")}
+                    >
+                        <Minus size={16} />
+                    </button>
                     <div className="flex items-center justify-center bg-base-200 px-4">
                         <span className="label text-base-content">{item.quantity}</span>
                     </div>
-                    <button className="btn btn-sm rounded-none" onClick={() => onIncreaseQuantity(item.id)}><Plus size={16} /></button>
+                    <button
+                        className="btn btn-sm rounded-none"
+                        onClick={() => onIncreaseQuantity(item.id)}
+                        title={t("quantity.increase")}
+                    >
+                        <Plus size={16} />
+                    </button>
                 </div>
             </div>
 
             <div className="flex justify-between items-center">
-                <span className="text-sm font-medium">Total:</span>
+                <span className="text-sm font-medium">{t("cart_items.total")}:</span>
                 <PriceDisplay price={totalPrice} className="font-bold" />
             </div>
         </div>
@@ -103,11 +117,23 @@ function CartItemComponent({ item, onIncreaseQuantity, onDecreaseQuantity }: Car
                     )}
                 </div>
                 <div className="w-32 flex">
-                    <button className="btn rounded-none" onClick={() => onDecreaseQuantity(item.id)}><Minus /></button>
+                    <button
+                        className="btn rounded-none"
+                        onClick={() => onDecreaseQuantity(item.id)}
+                        title={t("quantity.decrease")}
+                    >
+                        <Minus />
+                    </button>
                     <div className="w-full flex items-center justify-center bg-base-200">
                         <span className="label text-base-content p-2">{item.quantity}</span>
                     </div>
-                    <button className="btn rounded-none" onClick={() => onIncreaseQuantity(item.id)}><Plus /></button>
+                    <button
+                        className="btn rounded-none"
+                        onClick={() => onIncreaseQuantity(item.id)}
+                        title={t("quantity.increase")}
+                    >
+                        <Plus />
+                    </button>
                 </div>
                 <div className="w-24 text-center">
                     <PriceDisplay price={totalPrice} />

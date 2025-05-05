@@ -10,9 +10,10 @@ import { PaginationData } from "@/types/paginate";
 import { useState, useEffect, useCallback } from "react";
 import { authorService } from "@/api/authorService";
 import { useSearchParams } from "react-router-dom";
-import { Filter } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 export default function Shop() {
+    const { t } = useTranslation("shop");
     const [searchParams, setSearchParams] = useSearchParams();
     const [currentTitleTrailing, setCurrentTitleTrailing] = useState<string>('');
     const [filters, setFilters] = useState<BookFilterParams>({
@@ -25,11 +26,11 @@ export default function Shop() {
     });
 
     const ratingOptions = [
-        { name: "1 Star", value: "1" },
-        { name: "2 Stars", value: "2" },
-        { name: "3 Stars", value: "3" },
-        { name: "4 Stars", value: "4" },
-        { name: "5 Stars", value: "5" },
+        { name: t("rating_options.stars_value", { value: "1", text: t("rating_options.star") }), value: "1" },
+        { name: t("rating_options.stars_value", { value: "2", text: t("rating_options.stars") }), value: "2" },
+        { name: t("rating_options.stars_value", { value: "3", text: t("rating_options.stars") }), value: "3" },
+        { name: t("rating_options.stars_value", { value: "4", text: t("rating_options.stars") }), value: "4" },
+        { name: t("rating_options.stars_value", { value: "5", text: t("rating_options.stars") }), value: "5" },
     ];
 
     const { data: books, isLoading, isError } = useQuery({
@@ -94,7 +95,7 @@ export default function Shop() {
         if (filters.category_id && categories?.data) {
             const category = categories.data.find(cat => cat.id === filters.category_id);
             if (category) {
-                filterTexts.push(`Category: ${category.category_name}`);
+                filterTexts.push(`${t("filters.category")}: ${category.category_name}`);
             }
         }
 
@@ -102,7 +103,7 @@ export default function Shop() {
         if (filters.author_id && authors?.data) {
             const author = authors.data.find(auth => auth.id === filters.author_id);
             if (author) {
-                filterTexts.push(`Author: ${author.author_name}`);
+                filterTexts.push(`${t("filters.author")}: ${author.author_name}`);
             }
         }
 
@@ -110,14 +111,14 @@ export default function Shop() {
         if (filters.rating_star) {
             const ratingOption = ratingOptions.find(opt => parseInt(opt.value) === filters.rating_star);
             if (ratingOption) {
-                filterTexts.push(`Rating: ${ratingOption.name}`);
+                filterTexts.push(`${t("filters.rating")}: ${ratingOption.name}`);
             }
         }
 
         // Join all filter texts with commas
-        const filterText = filterTexts.length > 0 ? `Filtered by ${filterTexts.join(', ')}` : '';
+        const filterText = filterTexts.length > 0 ? `${t("filters.filtered_by", { type: "", value: filterTexts.join(', ') })}` : '';
         setCurrentTitleTrailing(filterText);
-    }, [filters, categories?.data, authors?.data, ratingOptions]);
+    }, [filters, categories?.data, authors?.data, ratingOptions, t]);
 
     // Update filter text whenever filters or data changes
     useEffect(() => {
@@ -186,50 +187,7 @@ export default function Shop() {
 
     const { totalBooks, startItem, endItem } = displayInfo();
 
-    // if (isLoading) return <PageLayout pageTitle="Loading...">Loading...</PageLayout>;
-
-    // This component is no longer used since we've redesigned the mobile filters
-    // Keeping it for reference in case we need to revert
-    const _UnusedMobileFilterDropdown = ({
-        title,
-        options,
-        selectedValue,
-        onChange
-    }: {
-        title: string,
-        options: { name: string, value: string }[],
-        selectedValue?: string,
-        onChange: (value: string) => void
-    }) => {
-        return (
-            <div className="dropdown dropdown-bottom w-full">
-                <div tabIndex={0} role="button" className="btn btn-outline w-full justify-between">
-                    <span>{title}</span>
-                    <span>{selectedValue ? options.find(opt => opt.value === selectedValue)?.name : 'All'}</span>
-                </div>
-                <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-full max-h-60 overflow-y-auto">
-                    <li>
-                        <a
-                            className={selectedValue === undefined ? "active" : ""}
-                            onClick={() => onChange("")}
-                        >
-                            All
-                        </a>
-                    </li>
-                    {options.map((option) => (
-                        <li key={option.value}>
-                            <a
-                                className={selectedValue === option.value ? "active" : ""}
-                                onClick={() => onChange(option.value)}
-                            >
-                                {option.name}
-                            </a>
-                        </li>
-                    ))}
-                </ul>
-            </div>
-        );
-    };
+    if (isLoading) return <PageLayout pageTitle={t("page_status.loading")}>{t("page_status.loading")}</PageLayout>;
 
     // Handler for mobile filter changes
     const handleMobileCategoryChange = (value: string) => {
@@ -257,12 +215,15 @@ export default function Shop() {
     };
 
     return (
-        <PageLayout pageTitle="Books" titleChildren={currentTitleTrailing}>
+        <PageLayout pageTitle={t("page_title")} titleChildren={currentTitleTrailing}>
             {/* Desktop layout (hidden on mobile) */}
             <div className="hidden md:flex justify-between gap-4">
                 <aside className="flex flex-col gap-4 w-48">
+                    <div className="flex gap-2">
+                        <h3 className="font-bold text-2xl">{t("filters.filter_by")}</h3>
+                    </div>
                     <SelectGroup
-                        header="Category"
+                        header={t("filters.category")}
                         options={categories?.data?.map((category) => ({
                             name: category.category_name,
                             value: category.id.toString()
@@ -271,7 +232,7 @@ export default function Shop() {
                         selectedValue={filters.category_id?.toString()}
                     />
                     <SelectGroup
-                        header="Author"
+                        header={t("filters.author")}
                         options={authors?.data?.map((author) => ({
                             name: author.author_name,
                             value: author.id.toString()
@@ -280,7 +241,7 @@ export default function Shop() {
                         selectedValue={filters.author_id?.toString()}
                     />
                     <SelectGroup
-                        header="Rating"
+                        header={t("filters.rating")}
                         options={ratingOptions}
                         onClick={handleRatingChange}
                         selectedValue={filters.rating_star?.toString()}
@@ -289,7 +250,7 @@ export default function Shop() {
                 <main className="flex-1">
                     <div className="flex flex-col">
                         <div className="flex justify-between items-center mb-4">
-                            <p>Showing {startItem}-{endItem} of {totalBooks} books</p>
+                            <p>{t("pagination.showing")} {startItem}-{endItem} {t("pagination.of")} {totalBooks} {t("pagination.books")}</p>
                             <div className="flex gap-2">
                                 <select
                                     id="sort"
@@ -298,10 +259,10 @@ export default function Shop() {
                                     onChange={handleSortChange}
                                     className="select"
                                 >
-                                    <option value="on_sale">Sort by: On Sale</option>
-                                    <option value="popularity">Sort by: Popularity</option>
-                                    <option value="price_asc">Sort by price: Low to high</option>
-                                    <option value="price_desc">Sort by price: High to low</option>
+                                    <option value="on_sale">{t("filters.sort")}: {t("sort_options.on_sale")}</option>
+                                    <option value="popularity">{t("filters.sort")}: {t("sort_options.popularity")}</option>
+                                    <option value="price_asc">{t("sort_options.price_low_high")}</option>
+                                    <option value="price_desc">{t("sort_options.price_high_low")}</option>
                                 </select>
                                 <select
                                     id="size"
@@ -310,20 +271,20 @@ export default function Shop() {
                                     onChange={handleSizeChange}
                                     className="select w-auto"
                                 >
-                                    <option value={5}>Show 5</option>
-                                    <option value={10}>Show 10</option>
-                                    <option value={15}>Show 15</option>
-                                    <option value={20}>Show 20</option>
-                                    <option value={25}>Show 25</option>
+                                    <option value={5}>{t("display_options.show_value", { value: 5 })}</option>
+                                    <option value={10}>{t("display_options.show_value", { value: 10 })}</option>
+                                    <option value={15}>{t("display_options.show_value", { value: 15 })}</option>
+                                    <option value={20}>{t("display_options.show_value", { value: 20 })}</option>
+                                    <option value={25}>{t("display_options.show_value", { value: 25 })}</option>
                                 </select>
                             </div>
                         </div>
                         {
                             isLoading ? (
-                                <BookCardGridSkeleton />
+                                <BookCardGridSkeleton items={filters.size || 20} />
                             ) :
                                 isError ? (
-                                    <p className="text-center text-2xl">No books found.</p>
+                                    <p className="text-center text-2xl">{t("no_books_found")}</p>
                                 ) :
                                     (
                                         <>
@@ -345,7 +306,7 @@ export default function Shop() {
                     <div className="flex flex-wrap gap-2 mb-4">
                         <div className="dropdown dropdown-bottom">
                             <div tabIndex={0} role="button" className={`btn btn-sm ${filters.category_id ? 'btn-primary' : 'btn-outline'}`}>
-                                Category
+                                {t("filters.category")}
                             </div>
                             <div tabIndex={0} className="dropdown-content z-[1] shadow bg-base-100 rounded-box w-64">
                                 <div className="max-h-[40vh] overflow-y-auto">
@@ -355,7 +316,7 @@ export default function Shop() {
                                                 className={filters.category_id === undefined ? "active" : ""}
                                                 onClick={() => handleMobileCategoryChange("")}
                                             >
-                                                All Categories
+                                                {t("filters.all_categories")}
                                             </a>
                                         </li>
                                         {categories?.data?.map((category) => (
@@ -375,7 +336,7 @@ export default function Shop() {
 
                         <div className="dropdown dropdown-bottom">
                             <div tabIndex={0} role="button" className={`btn btn-sm ${filters.author_id ? 'btn-primary' : 'btn-outline'}`}>
-                                Author
+                                {t("filters.author")}
                             </div>
                             <div tabIndex={0} className="dropdown-content z-[1] shadow bg-base-100 rounded-box w-64">
                                 <div className="max-h-[40vh] overflow-y-auto">
@@ -385,7 +346,7 @@ export default function Shop() {
                                                 className={filters.author_id === undefined ? "active" : ""}
                                                 onClick={() => handleMobileAuthorChange("")}
                                             >
-                                                All Authors
+                                                {t("filters.all_authors")}
                                             </a>
                                         </li>
                                         {authors?.data?.map((author) => (
@@ -405,7 +366,7 @@ export default function Shop() {
 
                         <div className="dropdown dropdown-bottom">
                             <div tabIndex={0} role="button" className={`btn btn-sm ${filters.rating_star ? 'btn-primary' : 'btn-outline'}`}>
-                                Rating
+                                {t("filters.rating")}
                             </div>
                             <div tabIndex={0} className="dropdown-content z-[1] shadow bg-base-100 rounded-box w-64">
                                 <ul className="menu menu-sm p-2">
@@ -414,7 +375,7 @@ export default function Shop() {
                                             className={filters.rating_star === undefined ? "active" : ""}
                                             onClick={() => handleMobileRatingChange("")}
                                         >
-                                            Any Rating
+                                            {t("filters.any_rating")}
                                         </a>
                                     </li>
                                     {ratingOptions.map((option) => (
@@ -433,7 +394,7 @@ export default function Shop() {
 
                         <div className="dropdown dropdown-bottom">
                             <div tabIndex={0} role="button" className="btn btn-sm btn-outline">
-                                Sort
+                                {t("filters.sort")}
                             </div>
                             <div tabIndex={0} className="dropdown-content z-[1] shadow bg-base-100 rounded-box w-64">
                                 <ul className="menu menu-sm p-2">
@@ -442,7 +403,7 @@ export default function Shop() {
                                             className={filters.sort_by === 'on_sale' ? "active" : ""}
                                             onClick={() => handleSortChange({ target: { value: 'on_sale' } } as any)}
                                         >
-                                            On Sale
+                                            {t("sort_options.on_sale")}
                                         </a>
                                     </li>
                                     <li>
@@ -450,7 +411,7 @@ export default function Shop() {
                                             className={filters.sort_by === 'popularity' ? "active" : ""}
                                             onClick={() => handleSortChange({ target: { value: 'popularity' } } as any)}
                                         >
-                                            Popularity
+                                            {t("sort_options.popularity")}
                                         </a>
                                     </li>
                                     <li>
@@ -458,7 +419,7 @@ export default function Shop() {
                                             className={filters.sort_by === 'price_asc' ? "active" : ""}
                                             onClick={() => handleSortChange({ target: { value: 'price_asc' } } as any)}
                                         >
-                                            Price: Low to High
+                                            {t("sort_options.price_low_high")}
                                         </a>
                                     </li>
                                     <li>
@@ -466,7 +427,7 @@ export default function Shop() {
                                             className={filters.sort_by === 'price_desc' ? "active" : ""}
                                             onClick={() => handleSortChange({ target: { value: 'price_desc' } } as any)}
                                         >
-                                            Price: High to Low
+                                            {t("sort_options.price_high_low")}
                                         </a>
                                     </li>
                                 </ul>
@@ -475,7 +436,7 @@ export default function Shop() {
 
                         <div className="dropdown dropdown-bottom">
                             <div tabIndex={0} role="button" className="btn btn-sm btn-outline">
-                                Show {filters.size}
+                                {t("display_options.show")} {filters.size}
                             </div>
                             <div tabIndex={0} className="dropdown-content z-[1] shadow bg-base-100 rounded-box">
                                 <ul className="menu menu-sm p-2">
@@ -485,7 +446,7 @@ export default function Shop() {
                                                 className={filters.size === size ? "active" : ""}
                                                 onClick={() => handleSizeChange({ target: { value: size.toString() } } as any)}
                                             >
-                                                Show {size}
+                                                {t("display_options.show_value", { value: size })}
                                             </a>
                                         </li>
                                     ))}
@@ -528,13 +489,13 @@ export default function Shop() {
                                         }));
                                     }}
                                 >
-                                    Clear All
+                                    {t("filters.clear_all")}
                                 </button>
                             )}
                         </div>
                     )}
 
-                    <p className="text-sm pb-2">Showing {startItem}-{endItem} of {totalBooks} books</p>
+                    <p className="text-sm pb-2">{t("pagination.showing")} {startItem}-{endItem} {t("pagination.of")} {totalBooks} {t("pagination.books")}</p>
                 </div>
 
                 {
@@ -542,7 +503,7 @@ export default function Shop() {
                         <BookCardGridSkeleton />
                     ) :
                         isError ? (
-                            <p className="text-center text-2xl">No books found.</p>
+                            <p className="text-center text-2xl">{t("no_books_found")}</p>
                         ) :
                             (
                                 <>

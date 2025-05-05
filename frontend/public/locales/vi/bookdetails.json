@@ -1,0 +1,96 @@
+{
+  "book_details": {
+    "author": "Tác giả",
+    "category": "Thể loại",
+    "summary": "Tóm tắt",
+    "price": "Giá",
+    "final_price": "Giá cuối",
+    "discount": "Giảm giá",
+    "rating": "Đánh giá",
+    "reviews": "Nhận xét",
+    "published": "Xuất bản",
+    "by_author": "Tác giả"
+  },
+  "add_to_cart": {
+    "quantity": "Số lượng",
+    "add_to_cart": "Thêm vào giỏ hàng",
+    "in_stock": "Còn hàng",
+    "out_of_stock": "Hết hàng",
+    "max_quantity": "Số lượng tối đa: {{max}}"
+  },
+  "reviews": {
+    "title": "Đánh giá từ khách hàng",
+    "average_rating": "Đánh giá trung bình",
+    "write_review": "Viết đánh giá",
+    "filter_by": "Lọc theo",
+    "sort_by": "Sắp xếp theo",
+    "no_reviews": "Chưa có đánh giá nào. Hãy là người đầu tiên đánh giá cuốn sách này!",
+    "show_more": "Xem thêm đánh giá",
+    "verified_purchase": "Đã mua hàng",
+    "posted_on": "Đăng vào {{date}}",
+    "helpful": "Đánh giá này có hữu ích không?",
+    "report": "Báo cáo",
+    "read_more": "Đọc thêm",
+    "read_less": "Thu gọn",
+    "filtered_by": "(Lọc theo {{rating}} {{stars}})",
+    "stars": "sao",
+    "star": "sao",
+    "reviews_count": "({{count}} {{text}})",
+    "review": "đánh giá",
+    "reviews_text": "đánh giá",
+    "showing_reviews": "Hiển thị {{start}}-{{end}} trong {{total}} đánh giá",
+    "no_reviews_found": "Không tìm thấy đánh giá nào."
+  },
+  "review_form": {
+    "title": "Viết đánh giá",
+    "rating_label": "Chọn số sao đánh giá *",
+    "title_label": "Thêm tiêu đề *",
+    "title_placeholder": "Tóm tắt đánh giá của bạn",
+    "details_label": "Chi tiết! Đánh giá của bạn giúp ích cho người mua khác",
+    "details_placeholder": "Chia sẻ ý kiến của bạn về cuốn sách này",
+    "submit": "Gửi đánh giá",
+    "submitting": "Đang gửi...",
+    "login_required": "Vui lòng đăng nhập để viết đánh giá",
+    "already_reviewed": "Bạn đã đánh giá cuốn sách này rồi",
+    "success": "Đánh giá của bạn đã được gửi thành công",
+    "error": "Đã xảy ra lỗi khi gửi đánh giá. Vui lòng thử lại.",
+    "thank_you": "Cảm ơn đánh giá của bạn!",
+    "closing_in": "Đóng trong {{seconds}} giây...",
+    "close": "Đóng",
+    "validation": {
+      "title_required": "Tiêu đề đánh giá là bắt buộc",
+      "title_max_length": "Tiêu đề không được quá 120 ký tự",
+      "rating_required": "Đánh giá là bắt buộc",
+      "rating_min": "Đánh giá phải có ít nhất 1 sao",
+      "rating_max": "Đánh giá không được quá 5 sao"
+    },
+    "star_options": {
+      "1_star": "1 Sao",
+      "2_stars": "2 Sao",
+      "3_stars": "3 Sao",
+      "4_stars": "4 Sao",
+      "5_stars": "5 Sao"
+    }
+  },
+  "sort_options": {
+    "newest": "Mới nhất trước",
+    "oldest": "Cũ nhất trước",
+    "highest_rating": "Đánh giá cao nhất",
+    "lowest_rating": "Đánh giá thấp nhất",
+    "most_helpful": "Hữu ích nhất"
+  },
+  "rating_filter": {
+    "all": "Tất cả đánh giá",
+    "5_stars": "5 Sao",
+    "4_stars": "4 Sao",
+    "3_stars": "3 Sao",
+    "2_stars": "2 Sao",
+    "1_star": "1 Sao"
+  },
+  "page_status": {
+    "loading": "Đang tải...",
+    "error": "Lỗi",
+    "failed_to_load_book": "Không thể tải thông tin sách.",
+    "failed_to_load_reviews": "Không thể tải đánh giá. Vui lòng thử lại."
+  }
+}

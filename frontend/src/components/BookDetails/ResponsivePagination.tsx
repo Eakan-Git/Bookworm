@@ -1,5 +1,6 @@
 import { PaginationData } from "@/types/paginate";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 interface ResponsivePaginationProps {
     data: PaginationData;
@@ -7,6 +8,7 @@ interface ResponsivePaginationProps {
 }
 
 export default function ResponsivePagination({ data, onChange }: ResponsivePaginationProps) {
+    const { t } = useTranslation("shop");
     const generatePagination = () => {
         const pages = [];
         const maxPagesToShow = 5;
@@ -71,7 +73,7 @@ export default function ResponsivePagination({ data, onChange }: ResponsivePagin
                 onClick={() => data.current_page > 1 && onChange(data.current_page - 1)}
                 disabled={data.current_page === 1}
             >
-                <span className="hidden sm:inline">Previous</span>
+                <span className="hidden sm:inline">{t("pagination.previous")}</span>
                 <ChevronLeft className="inline-block sm:hidden" size={16} />
             </button>
 
@@ -98,7 +100,7 @@ export default function ResponsivePagination({ data, onChange }: ResponsivePagin
                 onClick={() => data.current_page < data.total_pages && onChange(data.current_page + 1)}
                 disabled={data.current_page === data.total_pages}
             >
-                <span className="hidden sm:inline">Next</span>
+                <span className="hidden sm:inline">{t("pagination.next")}</span>
                 <ChevronRight className="inline-block sm:hidden" size={16} />
             </button>
         </div>

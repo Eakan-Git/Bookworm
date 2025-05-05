@@ -11,11 +11,12 @@ import ReviewForm from '@/components/ReviewForm/ReviewForm';
 import { ReviewFilterParams, ReviewFormValues } from "@/types/review";
 import { Book } from "@/types/book";
 import { ReviewsResponse } from "@/types/review";
+import { useTranslation } from "react-i18next";
 
 // Add the reviewCountdownTimer property to the Window interface
 declare global {
     interface Window {
-        reviewCountdownTimer?: number;
+        reviewCountdownTimer?: ReturnType<typeof setInterval>;
     }
 }
 
@@ -34,6 +35,8 @@ const ReviewsSection = memo(({
     onFilterChange: (filters: Partial<ReviewFilterParams>) => void;
     book: Book | undefined;
 }) => {
+    const { t } = useTranslation("bookdetails");
+
     if (isLoading) return (
         <div className="flex justify-center items-center h-64">
             <span className="loading loading-spinner loading-lg"></span>
@@ -42,7 +45,7 @@ const ReviewsSection = memo(({
 
     if (error) return (
         <div className="flex justify-center items-center h-64">
-            <p>Failed to load reviews. Please try again.</p>
+            <p>{t("page_status.failed_to_load_reviews")}</p>
         </div>
     );
 
@@ -59,6 +62,7 @@ const ReviewsSection = memo(({
 });
 
 export default function BookDetails() {
+    const { t } = useTranslation("bookdetails");
     const { id } = useParams();
     if (!id) return null;
 
@@ -118,10 +122,12 @@ export default function BookDetails() {
             const updateModalContent = () => {
                 setModalContent(
                     <>
-                        <h3 className="text-lg pb-4">Thank you for your review!</h3>
-                        <p className="text-base-content">Your review has been submitted successfully.</p>
+                        <h3 className="text-lg pb-4">{t("review_form.thank_you")}</h3>
+                        <p className="text-base-content">{t("review_form.success")}</p>
                         <br />
-                        <p className="text-base-content text-center font-bold">Closing in {countdown} seconds...</p>
+                        <p className="text-base-content text-center font-bold">
+                            {t("review_form.closing_in", { seconds: countdown })}
+                        </p>
                         <div className="modal-action">
                             <button className="btn btn-secondary" onClick={() => {
                                 // Refetch data immediately when user clicks close
@@ -139,7 +145,7 @@ export default function BookDetails() {
                                     clearInterval(window.reviewCountdownTimer);
                                     window.reviewCountdownTimer = undefined;
                                 }
-                            }}>Close</button>
+                            }}>{t("review_form.close")}</button>
                         </div>
                     </>
                 );
@@ -184,11 +190,11 @@ export default function BookDetails() {
         }
     }, [bookId, queryClient, refetchBook, refetchReviews]);
 
-    if (isBookLoading) return <PageLayout pageTitle="Loading...">Loading...</PageLayout>;
+    if (isBookLoading) return <PageLayout pageTitle={t("page_status.loading")}>{t("page_status.loading")}</PageLayout>;
 
     if (bookError) return (
-        <PageLayout pageTitle="Error">
-            <p>Failed to load book details.</p>
+        <PageLayout pageTitle={t("page_status.error")}>
+            <p>{t("page_status.failed_to_load_book")}</p>
         </PageLayout>
     );
 
