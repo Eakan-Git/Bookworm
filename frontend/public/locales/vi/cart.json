@@ -46,10 +46,15 @@
       "message": "Bạn không thể thêm quá 8 cuốn {{title}} vào giỏ hàng."
     },
     "price_mismatch": {
-      "title": "Cập nhật giá",
+      "title": "Cập nhật giỏ hàng",
       "message": "Một số giá đã thay đổi kể từ khi bạn thêm sản phẩm vào giỏ hàng. Giá đã được cập nhật.",
       "details": "Một số giá đã thay đổi kể từ khi bạn thêm sản phẩm vào giỏ hàng:",
       "updated_message": "Giỏ hàng của bạn đã được cập nhật với giá mới nhất. Vui lòng xem lại các thay đổi trước khi đặt hàng.",
+      "close": "Đóng"
+    },
+    "not_found": {
+      "details": "Một số sách trong giỏ hàng của bạn không còn khả dụng.",
+      "removed_message": "Những sản phẩm này đã được xóa khỏi giỏ hàng của bạn.",
       "close": "Đóng"
     },
     "order_success": {

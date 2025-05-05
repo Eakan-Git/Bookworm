@@ -19,6 +19,9 @@ class OrderController:
             Created order
 
         Raises:
-            HTTPException: If there's a price mismatch or book not found
+            HTTPException:
+                - 400 Bad Request with OrderError containing:
+                  - mismatches: List of books with price mismatches
+                  - not_found: List of book IDs that were not found
         """
         return OrderService.create_order_from_client_input(order_data, db, user_id)

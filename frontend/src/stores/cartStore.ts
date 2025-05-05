@@ -23,6 +23,7 @@ interface CartStore {
     clearCurrentCart: () => void;
     getCurrentCart: () => CartItem[];
     updateMismatchedPrices: (mismatches: {book_id: number, actual_price: number}[]) => void;
+    removeNotFoundBooks: (notFoundIds: number[]) => void;
 }
 
 export const useCartStore = create<CartStore>()(
@@ -305,6 +306,38 @@ export const useCartStore = create<CartStore>()(
 
                         return item;
                     });
+
+                    // Update the appropriate cart
+                    if (state.currentUserId === null) {
+                        return { guestCart: updatedCart };
+                    } else {
+                        const userCartIndex = state.userCarts.findIndex(cart => cart.userId === state.currentUserId);
+
+                        if (userCartIndex >= 0) {
+                            // Update existing user cart
+                            const updatedUserCarts = [...state.userCarts];
+                            updatedUserCarts[userCartIndex] = {
+                                ...updatedUserCarts[userCartIndex],
+                                items: updatedCart
+                            };
+                            return { userCarts: updatedUserCarts };
+                        }
+
+                        return state; // No changes if user cart not found
+                    }
+                });
+            },
+
+            // Remove books that no longer exist in the database
+            removeNotFoundBooks: (notFoundIds) => {
+                set((state) => {
+                    const currentCart = state.getCurrentCart();
+
+                    // Create a set of not found book IDs for faster lookup
+                    const notFoundSet = new Set(notFoundIds);
+
+                    // Filter out not found books from the cart
+                    const updatedCart = currentCart.filter(item => !notFoundSet.has(item.id));
 
                     // Update the appropriate cart
                     if (state.currentUserId === null) {

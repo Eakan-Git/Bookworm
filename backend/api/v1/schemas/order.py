@@ -68,6 +68,6 @@ class OrderRead(OrderBase):
         from_attributes = True
 
 
-class PriceMismatchError(BaseModel):
-    """Schema for price mismatch error"""
+class OrderError(BaseModel):
     mismatches: List[BookReadSimple]
+    not_found: List[int]

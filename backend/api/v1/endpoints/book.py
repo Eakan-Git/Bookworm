@@ -1,10 +1,10 @@
 from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 from typing import List
-
+from api.v1.middlewares.auth_middleware import get_current_admin_user
 from api.v1.schemas.common import PaginatedResponse
 from api.v1.schemas.review import ReviewRead, ReviewCreate
-from api.v1.schemas.book import BookRead, BookReadSimple, BookReadSimpleWithReviewCount, BookReadSimpleWithRating
+from api.v1.schemas.book import BookRead, BookReadSimple, BookReadSimpleWithReviewCount, BookReadSimpleWithRating, BookCreate
 from api.v1.schemas.query import BookFilter, ReviewFilter
 from api.v1.controllers.book import BookController
 from api.v1.controllers.review import ReviewController
@@ -97,3 +97,8 @@ def create_review_for_book(
     This endpoint creates a new review for a specific book.
     """
     return ReviewController.post_review_for_book(book_id, review_data, db)
+
+
+@router.post("", response_model=BookRead, status_code=status.HTTP_201_CREATED)
+def create_book(book_data: BookCreate, db: Session = Depends(get_db_session), current_user: dict = Depends(get_current_admin_user)):
+    return BookController.create_book(book_data, db)

@@ -11,10 +11,11 @@ import { PlacedOrderItem } from "@/types/order";
 import { Book } from "@/types/book";
 import { showLoginModal } from "@/utils/authUtils";
 import { useTranslation } from "react-i18next";
+import PriceDisplay from "@/components/PriceDisplay/PriceDisplay";
 
 export default function Cart() {
     const navigate = useNavigate();
-    const { getCurrentCart, getItemQuantity, clearCurrentCart, migrateGuestCart, updateMismatchedPrices } = useCartStore();
+    const { getCurrentCart, getItemQuantity, clearCurrentCart, migrateGuestCart, updateMismatchedPrices, removeNotFoundBooks } = useCartStore();
     const { isAuthenticated, user } = useAuthStore();
     const [modalContent, setModalContent] = useState<React.ReactNode>(null);
     const [countdown, setCountdown] = useState<number | null>(null);
@@ -130,12 +131,14 @@ export default function Cart() {
         } catch (error: any) {
             console.error('Order error:', error);
 
-            // Check if it's a price mismatch error
-            if (error.response?.status === 400 && error.response?.data?.detail?.mismatches) {
-                const mismatches = error.response.data.detail.mismatches;
+            // Check if it's a validation error (price mismatch or not found books)
+            if (error.response?.status === 400 && error.response?.data?.detail) {
+                const { mismatches, not_found } = error.response.data.detail;
+                const hasMismatches = mismatches && mismatches.length > 0;
+                const hasNotFound = not_found && not_found.length > 0;
 
-                // Update only the mismatched prices in the cart
-                if (mismatches && mismatches.length > 0) {
+                // Handle price mismatches
+                if (hasMismatches) {
                     // Create price updates for each mismatched book
                     const priceUpdates = mismatches.map((book: Book) => {
                         // Get the actual price from the book's discount or regular price
@@ -150,30 +153,51 @@ export default function Cart() {
                     updateMismatchedPrices(priceUpdates);
                 }
 
+                // Handle not found books
+                if (hasNotFound) {
+                    removeNotFoundBooks(not_found);
+                }
+
+                // Create modal content based on what errors occurred
                 setModalContent(
                     <div className="p-4">
                         <h3 className="text-lg font-bold mb-4">{t("modals.price_mismatch.title")}</h3>
-                        <p>{t("modals.price_mismatch.details")}</p>
-                        <ul className="list-disc pl-5 my-2">
-                            {mismatches.map((book: Book) => {
-                                // Find the current price in the cart
-                                const cartItem = cart.find(item => item.id === book.id);
-                                const expectedPrice = cartItem ?
-                                    (cartItem.discount?.discount_price || cartItem.book_price) : 0;
 
-                                // Get the actual price from the book's discount or regular price
-                                const actualPrice = book.discount?.discount_price || book.book_price || 0;
+                        {/* Price mismatches section */}
+                        {hasMismatches && (
+                            <>
+                                <p>{t("modals.price_mismatch.details")}</p>
+                                <ul className="list-disc pl-5 my-2">
+                                    {mismatches.map((book: Book) => {
+                                        // Find the current price in the cart
+                                        const cartItem = cart.find(item => item.id === book.id);
+                                        const expectedPrice = cartItem ?
+                                            (cartItem.discount?.discount_price || cartItem.book_price) : 0;
 
-                                return (
-                                    <li key={book.id}>
-                                        <span className="font-medium">{book.book_title}</span>:
-                                        <span className="line-through mx-1">${expectedPrice.toFixed(2)}</span>
-                                        <span className="font-bold">${actualPrice.toFixed(2)}</span>
-                                    </li>
-                                );
-                            })}
-                        </ul>
-                        <p>{t("modals.price_mismatch.updated_message")}</p>
+                                        // Get the actual price from the book's discount or regular price
+                                        const actualPrice = book.discount?.discount_price || book.book_price || 0;
+
+                                        return (
+                                            <li key={book.id}>
+                                                <span className="font-medium">{book.book_title}</span>:
+                                                <PriceDisplay className="line-through mx-1 inline-block m-0" price={expectedPrice} />
+                                                <PriceDisplay className="font-bold inline-block m-0" price={actualPrice} />
+                                            </li>
+                                        );
+                                    })}
+                                </ul>
+                                <p>{t("modals.price_mismatch.updated_message")}</p>
+                            </>
+                        )}
+
+                        {/* Not found books section */}
+                        {hasNotFound && (
+                            <>
+                                <p className="mt-3">{t("modals.not_found.details")}</p>
+                                <p className="mt-1">{t("modals.not_found.removed_message")}</p>
+                            </>
+                        )}
+
                         <div className="modal-action">
                             <button
                                 className="btn btn-primary"
@@ -214,7 +238,7 @@ export default function Cart() {
         } finally {
             setIsSubmitting(false);
         }
-    }, [cart, isAuthenticated, clearCurrentCart, navigate, migrateGuestCart, updateMismatchedPrices, countdown]);
+    }, [cart, isAuthenticated, clearCurrentCart, navigate, migrateGuestCart, updateMismatchedPrices, removeNotFoundBooks, countdown]);
 
     return (
         <>
