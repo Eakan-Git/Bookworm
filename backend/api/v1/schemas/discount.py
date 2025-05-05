@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, field_serializer
 from typing import Optional
 from datetime import date
 
@@ -8,7 +8,14 @@ class DiscountBase(BaseModel):
     discount_start_date: Optional[date] = None
     discount_end_date: Optional[date] = None
     discount_price: Optional[float] = None
-    
+
+    @field_serializer('discount_start_date', 'discount_end_date')
+    def serialize_date(self, value: Optional[date]) -> Optional[str]:
+        """Serialize date objects to ISO format strings for JSON serialization"""
+        if value is None:
+            return None
+        return value.isoformat()
+
     class Config:
         orm_mode = True
         from_attributes = True
@@ -23,7 +30,7 @@ class DiscountRead(DiscountBase):
     """Schema for reading a discount"""
     id: int
     book_id: int
-    
+
     class Config:
         orm_mode = True
         from_attributes = True

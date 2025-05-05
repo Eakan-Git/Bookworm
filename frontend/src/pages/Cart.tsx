@@ -7,7 +7,8 @@ import CartItemList from "@/components/CartDetails/CartItemList";
 import CartTotals from "@/components/CartDetails/CartTotals";
 import CloseOnClickOutSideModal from "@/components/CloseOnClickOutSideModal";
 import { orderService } from "@/api/orderService";
-import { PlacedOrderItem, PriceMismatchError } from "@/types/order";
+import { PlacedOrderItem } from "@/types/order";
+import { Book } from "@/types/book";
 import { showLoginModal } from "@/utils/authUtils";
 
 export default function Cart() {
@@ -133,11 +134,17 @@ export default function Cart() {
 
                 // Update only the mismatched prices in the cart
                 if (mismatches && mismatches.length > 0) {
-                    // Convert the new format to the format expected by updateMismatchedPrices
-                    const priceUpdates = mismatches.map((mismatch: PriceMismatchError) => ({
-                        book_id: mismatch.id,
-                        actual_price: mismatch.actual_price
-                    }));
+                    // Create price updates for each mismatched book
+                    const priceUpdates = mismatches.map((book: Book) => {
+                        // Get the actual price from the book's discount or regular price
+                        const actualPrice = book.discount?.discount_price || book.book_price || 0;
+
+                        return {
+                            book_id: book.id,
+                            actual_price: actualPrice
+                        };
+                    });
+
                     updateMismatchedPrices(priceUpdates);
                 }
 
@@ -146,12 +153,20 @@ export default function Cart() {
                         <h3 className="text-lg font-bold mb-4">Price Update</h3>
                         <p>Some prices have changed since you added items to your cart:</p>
                         <ul className="list-disc pl-5 my-2">
-                            {mismatches.map((mismatch: PriceMismatchError) => {
+                            {mismatches.map((book: Book) => {
+                                // Find the current price in the cart
+                                const cartItem = cart.find(item => item.id === book.id);
+                                const expectedPrice = cartItem ?
+                                    (cartItem.discount?.discount_price || cartItem.book_price) : 0;
+
+                                // Get the actual price from the book's discount or regular price
+                                const actualPrice = book.discount?.discount_price || book.book_price || 0;
+
                                 return (
-                                    <li key={mismatch.id}>
-                                        <span className="font-medium">{mismatch.book_title}</span>:
-                                        <span className="line-through mx-1">${mismatch.expected_price.toFixed(2)}</span>
-                                        <span className="font-bold">${mismatch.actual_price.toFixed(2)}</span>
+                                    <li key={book.id}>
+                                        <span className="font-medium">{book.book_title}</span>:
+                                        <span className="line-through mx-1">${expectedPrice.toFixed(2)}</span>
+                                        <span className="font-bold">${actualPrice.toFixed(2)}</span>
                                     </li>
                                 );
                             })}
