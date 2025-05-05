@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 from fastapi import HTTPException, status
 from typing import List
 from api.v1.schemas.common import PaginatedResponse
-from api.v1.schemas.book import BookRead, BookReadSimpleWithReviewCount, BookReadSimpleWithRating
+from api.v1.schemas.book import BookRead, BookReadSimpleWithReviewCount, BookReadSimpleWithRating, BookCreate
 from api.v1.schemas.query import BookFilter, ReviewFilter
 from api.v1.schemas.review import ReviewRead
 from api.v1.services.book import BookService
@@ -52,3 +52,7 @@ class BookController:
                 detail=f"Book not found with id {book_id}"
             )
         return BookService.get_reviews_by_book_id(book_id, filter_params, db)
+
+    @staticmethod
+    def create_book(book_data: BookCreate, db: Session) -> BookRead:
+        return BookService.create_book(book_data, db)

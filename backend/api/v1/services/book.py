@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session, joinedload
 from typing import List, Optional
 
-from api.v1.schemas.book import BookRead, BookReadSimple, BookReadSimpleWithReviewCount, BookReadSimpleWithRating
+from api.v1.schemas.book import BookRead, BookReadSimple, BookReadSimpleWithReviewCount, BookReadSimpleWithRating, BookCreate
 from api.v1.schemas.query import BookFilter, ReviewFilter, ReviewSortField, SortDirection, BookSortField
 from api.v1.schemas.common import PaginatedResponse, PaginationMeta
 from api.v1.schemas.review import ReviewRead
@@ -416,3 +416,11 @@ class BookService:
                 size=filter_params.size
             )
         )
+        
+    @staticmethod
+    def create_book(book_data: BookCreate, db: Session) -> BookRead:
+        book = Book(**book_data.model_dump())
+        db.add(book)
+        db.commit()
+        db.refresh(book)
+        return BookRead.model_validate(book)
