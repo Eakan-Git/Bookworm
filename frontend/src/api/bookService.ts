@@ -5,8 +5,20 @@ import { Review, ReviewFilterParams, ReviewFormValues } from "@/types/review";
 
 const API_BASE_ROUTE = "/api/v1/books";
 export const bookService = {
-    getOnSale: () => axiosClient.get<Book[]>(`${API_BASE_ROUTE}/on-sale`),
-    getPopular: () => axiosClient.get<Book[]>(`${API_BASE_ROUTE}/popular`),
+    getOnSale: () => {
+        const queryParams = new URLSearchParams();
+        queryParams.append("size", "10");
+        queryParams.append("sort_by", "on_sale");
+        const queryString = queryParams.toString();
+        return axiosClient.get<PaginatedResponse<Book>>(`${API_BASE_ROUTE}?${queryString}`);
+    },
+    getPopular: () => {
+        const queryParams = new URLSearchParams();
+        queryParams.append("size", "8");
+        queryParams.append("sort_by", "popularity");
+        const queryString = queryParams.toString();
+        return axiosClient.get<PaginatedResponse<Book>>(`${API_BASE_ROUTE}?${queryString}`);
+    },
     getRecommended: () => axiosClient.get<Book[]>(`${API_BASE_ROUTE}/recommended`),
     getById: (id: number) => axiosClient.get<Book>(`${API_BASE_ROUTE}/${id}`),
     getBooks: (params: BookFilterParams = {}) => {
@@ -53,5 +65,6 @@ export const bookService = {
         const queryString = queryParams.toString();
         return axiosClient.get<PaginatedResponse<Review>>(`${API_BASE_ROUTE}/${bookId}/reviews?${queryString}`);
     },
-    createReview: (bookId: number, review: ReviewFormValues) => axiosClient.post<Review>(`${API_BASE_ROUTE}/${bookId}/reviews`, review),
+    createReview: (bookId: number, review: ReviewFormValues) =>
+        axiosClient.post<Review>(`${API_BASE_ROUTE}/${bookId}/reviews`, review),
 };

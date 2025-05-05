@@ -30,11 +30,11 @@ export default function Home() {
     );
     const { data: onSaleBooks } = useQuery({
         queryKey: ['on-sale'],
-        queryFn: () => bookService.getOnSale(),
+        queryFn: () => bookService.getOnSale().then(res => res.data.data),
     });
     const { data: popularBooks } = useQuery({
         queryKey: ['popular'],
-        queryFn: () => bookService.getPopular(),
+        queryFn: () => bookService.getPopular().then(res => res.data.data),
     });
     const { data: recommendedBooks } = useQuery({
         queryKey: ['recommended'],
@@ -46,7 +46,7 @@ export default function Home() {
             <CollectionContainer
                 header={onSaleHeaderContent}
             >
-                <BooksCarousel books={onSaleBooks?.data || []} />
+                <BooksCarousel books={onSaleBooks || []} />
             </CollectionContainer>
 
             <TabsContainer
@@ -58,7 +58,7 @@ export default function Home() {
                     },
                     {
                         name: t("sections.popular"),
-                        content: <BookCardGrid books={popularBooks?.data || []} className="md:w-10/12" />
+                        content: <BookCardGrid books={popularBooks || []} className="md:w-10/12" />
                     }
                 ]}
             />
