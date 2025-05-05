@@ -27,8 +27,10 @@ export default function BookDetail({ book }: { book: Book }) {
 
             {/* Right side */}
             <div className="flex-1 flex flex-col gap-4 p-6">
-                <h1 className="text-xl font-bold line-clamp-2">{book.book_title}</h1>
-                <p className="text-justify text-sm">{book.book_summary}</p>
+                <h1 className="text-xl font-bold whitespace-normal break-words w-full">{book.book_title}</h1>
+                <div className="max-h-80 overflow-y-auto pr-2">
+                    <p className="text-justify text-sm break-words w-full">{book.book_summary}</p>
+                </div>
             </div>
         </div>
     );
