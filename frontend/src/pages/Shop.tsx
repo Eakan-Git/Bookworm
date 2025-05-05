@@ -272,7 +272,6 @@ export default function Shop() {
                                     className="select w-auto"
                                 >
                                     <option value={5}>{t("display_options.show_value", { value: 5 })}</option>
-                                    <option value={10}>{t("display_options.show_value", { value: 10 })}</option>
                                     <option value={15}>{t("display_options.show_value", { value: 15 })}</option>
                                     <option value={20}>{t("display_options.show_value", { value: 20 })}</option>
                                     <option value={25}>{t("display_options.show_value", { value: 25 })}</option>
@@ -440,7 +439,7 @@ export default function Shop() {
                             </div>
                             <div tabIndex={0} className="dropdown-content z-[1] shadow bg-base-100 rounded-box">
                                 <ul className="menu menu-sm p-2">
-                                    {[5, 10, 15, 20, 25].map(size => (
+                                    {[5, 15, 20, 25].map(size => (
                                         <li key={size}>
                                             <a
                                                 className={filters.size === size ? "active" : ""}
